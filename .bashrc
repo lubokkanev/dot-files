@@ -115,8 +115,36 @@ fi
 
 # user defined
 alias less='less -M -N -i'
+alias lkam='sshpass -f ~/esx-pass.txt ssh -l root 10.26.233.204'
 PS1='\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h:\[\033[1;35m\]\w\[\033[1;31m\]\$\[\033[0m\] '
 bind Space:magic-space
+shopt -s dirspell
 
-export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+# function alias
+vimr() {
+	vim scp://root@10.26.233.204/$1
+}
+
+function cd() {
+	if [ "$#" = "0" ]; then
+    	pushd ${HOME} > /dev/null
+    elif [ -f "${1}" ]; then
+		${EDITOR} ${1}
+    else
+		pushd "$1" > /dev/null
+	fi
+}
+
+function bd() {
+	if [ "$#" = "0" ];then 
+		popd > /dev/null
+	else
+		for i in $(seq ${1}); do
+			popd > /dev/null
+		done
+	fi
+}
+
+# export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+export JAVA_HOME="/usr/bin/java"
 
