@@ -115,6 +115,7 @@ fi
 
 # user defined
 alias less='less -M -N -i'
+alias grep='grep --color=always'
 alias lkam='sshpass -f ~/esx-pass.txt ssh -l root 10.26.233.204'
 PS1='\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h:\[\033[1;35m\]\w\[\033[1;31m\]\$\[\033[0m\] '
 bind Space:magic-space
@@ -147,5 +148,4 @@ function bd() {
 
 # export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 export JAVA_HOME="/usr/bin/java"
-export GREP_OPTIONS='--color=always'
 
