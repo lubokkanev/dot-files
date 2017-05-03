@@ -116,8 +116,8 @@ fi
 # user defined
 alias less='less -M -N -i'
 alias grep='grep --color=always'
-alias lkam='sshpass -f ~/esx-pass.txt ssh -l root 10.26.233.204'
-PS1='\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h:\[\033[1;35m\]\w\[\033[1;31m\]\$\[\033[0m\] '
+alias lkam='lkam_ip=10.26.233.185; echo "Connecting to LKanev\`s automation manager: $lkam_ip"; sshpass -f ~/esx-pass.txt ssh -l root $lkam_ip'
+PS1='\[\033[1;31m\]\D{%F %T}|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h:\[\033[1;35m\]\w\[\033[1;31m\]\$\[\033[0m\] '
 bind Space:magic-space
 shopt -s dirspell
 
