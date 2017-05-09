@@ -121,7 +121,7 @@ PS1='\[\033[1;31m\]\D{%F %T}|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h:\[\
 bind Space:magic-space
 shopt -s dirspell
 
-# function alias
+# function
 vimr() {
 	vim scp://root@10.26.233.204/$1
 }
