@@ -5,4 +5,3 @@ set ff=unix
 syntax enable
 set hlsearch
 hi Search ctermbg=White
-
