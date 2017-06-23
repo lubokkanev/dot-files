@@ -4,4 +4,5 @@ set smartindent
 set ff=unix
 syntax enable
 set hlsearch
-hi Search ctermbg=White
+"hi Search ctermbg=White
+
