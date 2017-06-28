@@ -3,9 +3,9 @@ startup_message off
 hardstatus alwaysfirstline 
 shelltitle ''
 
-# hardstatus string '%{gk}[%{wk}%?%-Lw%?%{=b kR}(%{W}%n*%f %t%?(%u)%?%{=b kR})%{= w}%?%+Lw%?%? %{g}][%{d}%l%{g}][ %{= w}%Y/%m/%d %0C:%s%a%{g} ]%{W}'
-hardstatus string '%{gk}%{wk}%?%-Lw%?%{=b kR}(%{W}%n*%f %t%?(%u)%?%{=b kR})%{= w}%?%+Lw%?%? %{g}'
-hardstatus string '%{= kG}[%{G}%H%? %1`%?%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]'
+hardstatus string '%{= gW}%{= wk}%?%-Lw%?%{=b kR}(%{=W}%n*%f %t%?(%u)%?%{=b kR})%{= w}%?%+Lw%?%? %{g}' # initial
+hardstatus string "%{= KW} %H [ %=%-Lw%{= bW} %n%f %t %{-}%+Lw %= ] %C%a %Y-%M-%d" # tutorial, changed
+hardstatus string "%{= KW}[ %-Lw%{= bW} %n%f %t %{-}%+Lw %= ]" # tutorial, changed, time and host removed and left aligned 
 
 # mousetrack on
 
