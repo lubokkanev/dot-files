@@ -116,7 +116,6 @@ fi
 # user defined
 alias less='less -M -N -i'
 alias grep='grep --color=always'
-alias lkam='lkam_ip=10.26.233.185; echo "Connecting to LKanev\`s automation manager: $lkam_ip"; sshpass -f ~/esx-pass.txt ssh -l root $lkam_ip'
 alias gitp='git pull --rebase'
 alias gitpp='gitp; git push'
 alias gitc='git commit -am'
