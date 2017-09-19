@@ -154,3 +154,4 @@ export JAVA_HOME="/usr"
 export EDITOR=vim
 export P4CONFIG=.p4config
 
+source ~/.additionalrc
