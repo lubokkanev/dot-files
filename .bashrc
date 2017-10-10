@@ -125,7 +125,11 @@ alias gitp='git pull --rebase'
 alias gitpp='gitp; git push'
 alias gitc='git commit -am'
 alias gitca='git commit -a --amend --no-edit'
-alias gitmr='for BRANCH in `ls .git/refs/heads`; do git rebase master $BRANCH; done; git checkout master'
+alias gitmr='for BRANCH in `ls .git/refs/heads`; do if ! git rebase master $BRANCH; then break; fi; done; git checkout master'
+PS1='\[\033[38;5;142m\]\D{%T}\[\033[1;31m\]|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h\033[1;31m:\[\033[38;5;17m\]\w\[\033[1;31m\]\$\[\033[0m\] '
+bind Space:magic-space
+shopt -s dirspell
+shopt -s histverify # let's you verify before using '!!'
 
 # function
 vimr() {
