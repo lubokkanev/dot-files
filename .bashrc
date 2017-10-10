@@ -112,7 +112,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
 # user defined
 PS1='\[\033[38;5;142m\]\D{%T}\[\033[1;31m\]|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h\033[1;31m:\[\033[38;5;17m\]\w\[\033[1;31m\]\$\[\033[0m\] '
 bind Space:magic-space
@@ -132,7 +131,17 @@ shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
 
 # function
-vimr() {
+function gitcac() { # git commit amend, checkout
+    gitca
+
+    if [ -z ${1} ]; then
+        git checkout -
+    else
+        git checkout ${1}
+    fi
+}
+
+function vimr() {
 	vim scp://root@10.26.233.204/$1
 }
 
