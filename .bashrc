@@ -124,22 +124,25 @@ alias gitp='git pull --rebase'
 alias gitpp='gitp; git push'
 alias gitc='git commit -am'
 alias gitca='git commit -a --amend --no-edit'
-alias gitmr='for BRANCH in `ls .git/refs/heads`; do if ! git rebase master $BRANCH; then break; fi; done; git checkout master'
-alias gitch='git checkout'
+alias gitmr='set -f; for branch in `git branch`; do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done; git checkout master; set +f'
 
 # function
-function gitcach() { # git commit amend, checkout
-    gitca
+function gitcb() {
+    git checkout -b "${1}"
+    git commit --allow-empty -am "${1}" 
+}
 
+function gitch() {
     if [ -z ${1} ]; then
-        git checkout -
+        git checkout master
     else
         git checkout ${1}
     fi
 }
 
-function vimr() {
-	vim scp://root@10.26.233.204/$1
+function gitcach() { # git commit amend, checkout
+    gitca
+    gitch "${1}"
 }
 
 function cd() {
