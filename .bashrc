@@ -112,8 +112,13 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
 # user defined
-PS1='\[\033[38;5;142m\]\D{%T}\[\033[1;31m\]|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h\033[1;31m:\[\033[38;5;17m\]\w\[\033[1;31m\]\$\[\033[0m\] '
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+PS1='\[\033[38;5;142m\]\D{%T}\[\033[1;31m\]|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h\033[1;31m:\[\033[38;5;17m\]\w\[\033[1;31m\]$(parse_git_branch)\[\033[00m\]\$\[\033[0m\] '
 bind Space:magic-space
 shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
@@ -128,8 +133,12 @@ alias gitmr='set -f; for branch in `git branch`; do if [ "${branch}" != "*" ]; t
 
 # function
 function gitcb() {
-    git checkout -b "${1}"
+    git checkout -b "${1}" ${2}
     git commit --allow-empty -am "${1}" 
+}
+
+function gitmcb() {
+    gitcb "${1}" master
 }
 
 function gitch() {
