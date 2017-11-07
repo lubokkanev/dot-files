@@ -85,7 +85,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ll='ls -AlhF'
+alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -CF'
 
@@ -118,7 +118,7 @@ parse_git_branch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
-PS1='\[\033[38;5;142m\]\D{%T}\[\033[1;31m\]|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h\033[1;31m:\[\033[38;5;17m\]\w\[\033[1;31m\]$(parse_git_branch)\[\033[00m\]\$\[\033[0m\] '
+PS1='\[\033[38;5;142m\]\D{%T}\[\033[1;31m\]|\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h\033[1;31m:\[\033[38;5;17m\]\w\[\033[38;5;142m\]$(parse_git_branch)\[\033[00m\]\$\[\033[0m\] '
 bind Space:magic-space
 shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
