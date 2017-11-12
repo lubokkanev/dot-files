@@ -113,14 +113,7 @@ fi
 
 # user defined
 function parse_git_branch() {
-	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-	if [ ! "${BRANCH}" == "" ]
-	then
-		STAT=`parse_git_dirty`
-		echo " (${BRANCH}${STAT})"
-	else
-		echo ""
-	fi
+	echo `git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 }
 
 function parse_git_dirty {
@@ -154,8 +147,18 @@ function parse_git_dirty {
 	echo "${bits}"
 }
 
+function git_branch_prompt() {
+	BRANCH=`parse_git_branch`
+	if [ "${BRANCH}" != "" ]; then
+		#STAT=`parse_git_dirty`
+		echo " (${BRANCH}${STAT})"
+	else
+		echo ""
+	fi
+}
+
 bind Space:magic-space
-export PS1="\[\e[33m\]\t\[\e[31m\]|\[\e[36m\]\u\[\e[31m\]@\[\e[32m\]\h\[\e[31m\]:\[\e[35m\]\w\[\e[33m\]\`parse_git_branch\`\[\e[31m\]\$\[\e[m\] "
+export PS1="\[\e[33m\]\t\[\e[31m\]|\[\e[36m\]\u\[\e[31m\]@\[\e[32m\]\h\[\e[31m\]:\[\e[35m\]\w\[\e[33m\]\`git_branch_prompt\`\[\e[31m\]\$\[\e[m\] "
 shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
 
@@ -191,12 +194,14 @@ function gitcach() { # git commit amend, checkout
 }
 
 function gitsb() { # git submit branch
-    echo "The branch name is ${1}"
+	branch=${1}
+	if [ -z "${branch}" ]; then
+		branch=`parse_git_branch`
+	fi
 
     git checkout master && 
-    echo "sth????" && 
-    git rebase ${1} master && 
-    git branch -d ${1} && 
+    git rebase ${branch} master && 
+    git branch -d ${branch} && 
     gitmr && 
     gitpp
 }
