@@ -168,16 +168,16 @@ alias gitca='git commit -a --amend --no-edit'
 alias gitmr='set -f; for branch in `git branch`; do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done; git checkout master; set +f'
 
 # function
-function gitcb() {
+function gitcb() { # git create branch
     git checkout -b "${1}" ${2}
     git commit --allow-empty -am "${1}" 
 }
 
-function gitmcb() {
+function gitmcb() { # git create branch from master
     gitcb "${1}" master
 }
 
-function gitch() {
+function gitch() { # git checkout
     if [ -z ${1} ]; then
         git checkout master
     else
@@ -188,6 +188,17 @@ function gitch() {
 function gitcach() { # git commit amend, checkout
     gitca
     gitch "${1}"
+}
+
+function gitsb() { # git submit branch
+    echo "The branch name is ${1}"
+
+    git checkout master && 
+    echo "sth????" && 
+    git rebase ${1} master && 
+    git branch -d ${1} && 
+    gitmr && 
+    gitpp
 }
 
 function cd() {
