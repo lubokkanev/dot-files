@@ -157,17 +157,27 @@ function git_branch_prompt() {
 	fi
 }
 
-function parse_exit_code() {
-	exit_code=$?
-	if [ "${exit_code}" -eq 0 ]; then 
-		echo -e "\e[32m✔ "
-	else
-		echo -e "\e[31m✘ "
-	fi
+__prompt_command() {
+    local exit_code="$?"
+    PS1=""
+
+    local red='\[\e[0;31m\]'
+    local green='\[\e[0;32m\]'
+    local yellow='\[\e[1;33m\]'
+    local blue='\[\e[1;34m\]'
+    local purple='\[\e[0;35m\]'
+
+    if [ ${exit_code} -eq 0 ]; then
+        PS1+="${green}✔"
+    else
+        PS1+="${red}✘"
+    fi
+
+	PS1+=" ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\w${yellow}\`git_branch_prompt\`${red}\$\[\e[m\] "
 }
+PROMPT_COMMAND=__prompt_command
 
 bind Space:magic-space
-export PS1="\`parse_exit_code\`\\[\e[33m\]\t\[\e[31m\]|\[\e[36m\]\u\[\e[31m\]@\[\e[32m\]\h\[\e[31m\]:\[\e[35m\]\w\[\e[33m\]\`git_branch_prompt\`\[\e[31m\]\$\[\e[m\] "
 shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
 
