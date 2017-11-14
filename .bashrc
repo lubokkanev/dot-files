@@ -185,7 +185,7 @@ alias less='less -M -N -i'
 alias grep='grep --color=always'
 alias gitp='git pull --rebase'
 alias gitpp='gitp; git push'
-alias gitc='git commit -am'
+alias gitc='git add .; git commit -am'
 alias gitca='git commit -a --amend --no-edit'
 alias gitmr='set -f; for branch in `git branch`; do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done; git checkout master; set +f'
 
