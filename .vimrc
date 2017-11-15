@@ -7,3 +7,6 @@ set hlsearch
 "hi Search ctermbg=White
 set paste
 
+" serach the selected text by pressing //
+vnoremap // y/<C-R>"<CR> 
+
