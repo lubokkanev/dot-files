@@ -85,7 +85,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ll='ls -AlhF'
+alias ll='ls -AlnhF'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
