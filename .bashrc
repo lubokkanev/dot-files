@@ -252,4 +252,5 @@ export EDITOR=vim
 export P4CONFIG=.p4config
 
 [ -r ~/.additionalrc ] && source ~/.additionalrc
+[ -r ~/git-completion.sh ] && source ~/git-completion.sh
 

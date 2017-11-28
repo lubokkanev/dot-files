@@ -6,4 +6,5 @@
 !.inputrc
 !.screenrc
 !.ssh/config
+!git-completion.sh
 
