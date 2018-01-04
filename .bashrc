@@ -183,6 +183,8 @@ shopt -s histverify # let's you verify before using '!!'
 
 alias less='less -M -N -i'
 alias grep='grep --color=always'
+alias tmux='tmux -2'
+
 alias gitp='git pull --rebase'
 alias gitpp='gitp; git push'
 alias gitc='git add .; git commit -am'

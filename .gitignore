@@ -7,4 +7,5 @@
 !.screenrc
 !.ssh/config
 !git-completion.sh
+!.tmux.conf
 
