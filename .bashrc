@@ -173,7 +173,7 @@ __prompt_command() {
         PS1+="${red}✘"
     fi
 
-	PS1+=" ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\w${yellow}\`git_branch_prompt\`${red}\$\[\e[m\] "
+	PS1+=" ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\W${yellow}\`git_branch_prompt\`${red}\$\[\e[m\] "
 }
 PROMPT_COMMAND=__prompt_command
 
