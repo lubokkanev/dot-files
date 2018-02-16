@@ -168,12 +168,12 @@ __prompt_command() {
     local purple='\[\e[0;35m\]'
 
     if [ ${exit_code} -eq 0 ]; then
-        PS1+="${green}✔"
+        PS1+="${green}"
     else
-        PS1+="${red}✘"
+        PS1+="${red}"
     fi
 
-	PS1+=" ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\W${yellow}\`git_branch_prompt\`${red}\$\[\e[m\] "
+	PS1+="> ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\W${yellow}\`git_branch_prompt\`${red}\$\[\e[m\] "
 }
 PROMPT_COMMAND=__prompt_command
 
