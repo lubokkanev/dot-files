@@ -225,7 +225,7 @@ function gitsb() { # git submit branch
     git rebase ${branch} master && 
     git branch -d ${branch} && 
     gitmr && 
-    gitpp
+    git remote get-url origin > /dev/null 2>&1 && gitpp
 }
 
 export JAVA_HOME="/usr"
