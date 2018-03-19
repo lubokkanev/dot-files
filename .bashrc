@@ -186,15 +186,15 @@ alias grep='grep --color=always'
 alias tmux='tmux -2'
 
 alias gitp='git pull --rebase'
-alias gitpp='gitp; git push'
-alias gitc='git add .; git commit -am'
+alias gitpp='gitp && git push'
+alias gitc='git add . &&  git commit -am'
 alias gitca='git commit -a --amend --no-edit'
-alias gitmr='set -f; for branch in `git branch`; do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done; git checkout master; set +f'
+alias gitmr='set -f && for branch in `git branch`; do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
 alias ssh='TERM=xterm ssh'
 
 # function
 function gitcb() { # git create branch
-    git checkout -b "${1}" ${2}
+    git checkout -b "${1}" ${2} &&
     git commit --allow-empty -am "${1}" 
 }
 
@@ -211,7 +211,7 @@ function gitch() { # git checkout
 }
 
 function gitcach() { # git commit amend, checkout
-    gitca
+    gitca &&
     gitch "${1}"
 }
 
