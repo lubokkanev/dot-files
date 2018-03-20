@@ -47,12 +47,12 @@ esac
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
 
@@ -113,51 +113,51 @@ fi
 
 # user defined
 function parse_git_branch() {
-	echo `git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    echo $(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 }
 
 function parse_git_dirty {
-	status=`git status 2>&1 | tee`
-	dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
-	untracked=`echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?"`
-	ahead=`echo -n "${status}" 2> /dev/null | grep "Your branch is ahead of" &> /dev/null; echo "$?"`
-	newfile=`echo -n "${status}" 2> /dev/null | grep "new file:" &> /dev/null; echo "$?"`
-	renamed=`echo -n "${status}" 2> /dev/null | grep "renamed:" &> /dev/null; echo "$?"`
-	deleted=`echo -n "${status}" 2> /dev/null | grep "deleted:" &> /dev/null; echo "$?"`
-	bits=''
-	if [ "${renamed}" == "0" ]; then
-		bits=">${bits}"
-	fi
-	if [ "${ahead}" == "0" ]; then
-		bits="*${bits}"
-	fi
-	if [ "${newfile}" == "0" ]; then
-		bits="+${bits}"
-	fi
-	if [ "${untracked}" == "0" ]; then
-		bits="?${bits}"
-	fi
-	if [ "${deleted}" == "0" ]; then
-		bits="X${bits}"
-	fi
-	if [ "${dirty}" == "0" ]; then
-		bits="!${bits}"
-	fi
+    status=$(git status 2>&1 | tee)
+    dirty=$(echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?")
+    untracked=$(echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?")
+    ahead=$(echo -n "${status}" 2> /dev/null | grep "Your branch is ahead of" &> /dev/null; echo "$?")
+    newfile=$(echo -n "${status}" 2> /dev/null | grep "new file:" &> /dev/null; echo "$?")
+    renamed=$(echo -n "${status}" 2> /dev/null | grep "renamed:" &> /dev/null; echo "$?")
+    deleted=$(echo -n "${status}" 2> /dev/null | grep "deleted:" &> /dev/null; echo "$?")
+    bits=''
+    if [ "${renamed}" == "0" ]; then
+        bits=">${bits}"
+    fi
+    if [ "${ahead}" == "0" ]; then
+        bits="*${bits}"
+    fi
+    if [ "${newfile}" == "0" ]; then
+        bits="+${bits}"
+    fi
+    if [ "${untracked}" == "0" ]; then
+        bits="?${bits}"
+    fi
+    if [ "${deleted}" == "0" ]; then
+        bits="X${bits}"
+    fi
+    if [ "${dirty}" == "0" ]; then
+        bits="!${bits}"
+    fi
 
-	echo "${bits}"
+    echo "${bits}"
 }
 
 function git_branch_prompt() {
-	BRANCH=`parse_git_branch`
-	if [ "${BRANCH}" != "" ]; then
-		#STAT=`parse_git_dirty`
-		echo " (${BRANCH}${STAT})"
-	else
-		echo ""
-	fi
+    BRANCH=$(parse_git_branch)
+    if [ "${BRANCH}" != "" ]; then
+        #STAT=$(parse_git_dirty)
+        echo " (${BRANCH}${STAT})"
+    else
+        echo ""
+    fi
 }
 
-__prompt_command() {
+prompt_command() {
     local exit_code="$?"
     PS1=""
 
@@ -173,9 +173,9 @@ __prompt_command() {
         PS1+="${red}"
     fi
 
-	PS1+="> ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\W${yellow}\`git_branch_prompt\`${red}\$\[\e[m\] "
+    PS1+="> ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\W${yellow}\$(git_branch_prompt)${red}\$\[\e[m\] "
 }
-PROMPT_COMMAND=__prompt_command
+PROMPT_COMMAND=prompt_command
 
 bind Space:magic-space
 shopt -s dirspell
@@ -192,43 +192,49 @@ alias gitp='git pull --rebase'
 alias gitpp='gitp && git push'
 alias gitc='git add . &&  git commit -am'
 alias gitca='git commit -a --amend --no-edit'
-alias gitmr='set -f && for branch in `git branch`; do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
+alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
 
-# function
-function gitcb() { # git create branch
-    git checkout -b "${1}" ${2} &&
-    git commit --allow-empty -am "${1}" 
-}
+# functions
+    # git
+        function gitcb() { # git create branch
+            git checkout -b "${1}" ${2} &&
+            git commit --allow-empty -am "${1}" 
+        }
 
-function gitmcb() { # git create branch from master
-    gitcb "${1}" master
-}
+        function gitmcb() { # git create branch from master
+            gitcb "${1}" master
+        }
 
-function gitch() { # git checkout
-    if [ -z ${1} ]; then
-        git checkout master
-    else
-        git checkout ${1}
-    fi
-}
+        function gitch() { # git checkout
+            if [ -z ${1} ]; then
+                git checkout master
+            else
+                git checkout ${1}
+            fi
+        }
 
-function gitcach() { # git commit amend, checkout
-    gitca &&
-    gitch "${1}"
-}
+        function gitcach() { # git commit amend, checkout
+            gitca &&
+            gitch "${1}"
+        }
 
-function gitsb() { # git submit branch
-	branch=${1}
-	if [ -z "${branch}" ]; then
-		branch=`parse_git_branch`
-	fi
+        function gitsb() { # git submit branch
+            branch=${1}
+            if [ -z "${branch}" ]; then
+                branch=$(parse_git_branch)
+            fi
 
-    git checkout master && 
-    git rebase ${branch} master && 
-    git branch -d ${branch} && 
-    gitmr && 
-    git remote get-url origin > /dev/null 2>&1 && gitpp
-}
+            git checkout master && 
+            git rebase ${branch} master && 
+            git branch -d ${branch} && 
+            gitmr && 
+            git remote get-url origin > /dev/null 2>&1 && gitpp
+        }
+
+    # p4
+        function p4d() { # p4 diff changelist
+            p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
+        }
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
