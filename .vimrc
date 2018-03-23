@@ -1,5 +1,8 @@
 set nu
-set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
 set smartindent
 set ff=unix
 syntax enable
