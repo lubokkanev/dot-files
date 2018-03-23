@@ -182,6 +182,7 @@ shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
 
 alias less='less -M -N -i'
+alias les='/usr/share/vim/vim80/macros/less.sh'
 alias grep='grep --color=always'
 alias tmux='tmux -2'
 
