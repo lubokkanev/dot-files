@@ -180,6 +180,7 @@ PROMPT_COMMAND=__prompt_command
 bind Space:magic-space
 shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
+stty -ixon # let's you do ^s to go back in the "reverse-search"
 
 alias less='less -M -N -i'
 alias les='/usr/share/vim/vim80/macros/less.sh'
