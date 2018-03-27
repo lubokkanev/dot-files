@@ -10,6 +10,6 @@ syntax enable
 set hlsearch
 hi Search ctermbg=White
 
-" serach the selected text by pressing //
+" search the selected text by pressing //
 vnoremap // y/<C-R>"<CR> 
 

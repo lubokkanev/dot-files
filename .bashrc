@@ -231,25 +231,30 @@ alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]
             git remote get-url origin > /dev/null 2>&1 && gitpp
         }
 
+        function gitbd() { # git branch diff
+            git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${1}..${2}
+        }
+
+
     # p4
         function p4d() { # p4 diff changelist
             p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
         }
 
-		function p4ch() { # p4 change
-			if [ -n "${1}" ]; then
-				p4 edit -c "${1}" ./... > /dev/null &&
-				p4 revert -a ./... > /dev/null
-			else
-				p4 edit ./... > /dev/null &&
-				p4 revert -a ./... > /dev/null && 
-				p4 change 
-			fi
-		}
+        function p4ch() { # p4 change
+            if [ -n "${1}" ]; then
+                p4 edit -c "${1}" ./... > /dev/null &&
+                p4 revert -a ./... > /dev/null
+            else
+                p4 edit ./... > /dev/null &&
+                p4 revert -a ./... > /dev/null && 
+                p4 change 
+            fi
+        }
 
-		function p4chs() { # p4 changes
-			p4 changes -u lkanev -s pending ./...
-		}
+        function p4chs() { # p4 changes
+            p4 changes -u lkanev -s pending ./...
+        }
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
