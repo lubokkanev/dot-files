@@ -6,4 +6,5 @@
 [diff]
 	algorithm = patience
 [alias]
-	dif = diff --color-words --word-diff-regex=.
+	dif1 = diff --color-words --word-diff-regex=.
+	dif2 = diff --color-words
