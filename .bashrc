@@ -236,6 +236,21 @@ alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]
             p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
         }
 
+		function p4ch() { # p4 change
+			if [ -n "${1}" ]; then
+				p4 edit -c "${1}" ./... > /dev/null &&
+				p4 revert -a ./... > /dev/null
+			else
+				p4 edit ./... > /dev/null &&
+				p4 revert -a ./... > /dev/null && 
+				p4 change 
+			fi
+		}
+
+		function p4chs() { # p4 changes
+			p4 changes -u lkanev -s pending ./...
+		}
+
 export JAVA_HOME="/usr"
 export EDITOR=vim
 export P4CONFIG=.p4config
