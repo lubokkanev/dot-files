@@ -183,7 +183,7 @@ shopt -s histverify # let's you verify before using '!!'
 stty -ixon # let's you do ^s to go back in the "reverse-search"
 
 alias less='less -M -N -i'
-alias les='/usr/share/vim/vim80/macros/less.sh'
+alias les='/usr/share/vim/vim*/macros/less.sh'
 alias grep='grep --color=auto'
 alias tmux='tmux -2'
 alias ssh='TERM=xterm ssh'
