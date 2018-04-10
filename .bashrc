@@ -58,6 +58,7 @@ shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
 stty -ixon # let's you do ^s to go back in the "reverse-search"
 
+alias ll='ls -AlnhF'
 alias less='less -M -N -i'
 alias les='/usr/share/vim/vim*/macros/less.sh'
 alias grep='grep --color=auto'
