@@ -28,8 +28,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias ll='ls -AlnhF'
-
 # user defined
 function parse_git_branch() {
     echo $(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
@@ -138,6 +136,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         alias less='less -M -N -i'
         alias les='/usr/share/vim/vim*/macros/less.sh'
         alias tmux='tmux -2'
+        alias ll='ls -AlnhF'
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
