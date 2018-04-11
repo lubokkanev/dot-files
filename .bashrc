@@ -13,20 +13,22 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if false && ! shopt -oq posix; then # currently disabled
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 fi
+
+alias ll='ls -AlnhF'
 
 # user defined
 function parse_git_branch() {
@@ -58,20 +60,7 @@ shopt -s dirspell
 shopt -s histverify # let's you verify before using '!!'
 stty -ixon # let's you do ^s to go back in the "reverse-search"
 
-alias ll='ls -AlnhF'
-alias less='less -M -N -i'
-alias les='/usr/share/vim/vim*/macros/less.sh'
-alias grep='grep --color=auto'
-alias tmux='tmux -2'
-alias ssh='TERM=xterm ssh'
-
-alias gitp='git pull --rebase'
-alias gitpp='gitp && git push'
-alias gitc='git add . &&  git commit -am'
-alias gitca='git commit -a --amend --no-edit'
-alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
-
-# functions
+# functions and aliases
     # git
         function gitcb() { # git create branch
             git checkout -b "${1}" ${2} &&
@@ -112,6 +101,11 @@ alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]
             git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${1}..${2}
         }
 
+        alias gitp='git pull --rebase'
+        alias gitpp='gitp && git push'
+        alias gitc='git add . &&  git commit -am'
+        alias gitca='git commit -a --amend --no-edit'
+        alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
 
     # p4
         function p4d() { # p4 diff changelist
@@ -132,6 +126,18 @@ alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]
         function p4chs() { # p4 changes
             p4 changes -u lkanev -s pending ./...
         }
+
+    # other
+        function ssh() {
+            [ -n "${2}" ] && local cmd="${2}" || cmd="bash -i"
+            local pkey="$(cat ~/.ssh/id_rsa.pub)";
+
+            TERM=xterm command ssh -t "${1}" "grep -q \"${pkey}\" ~/.ssh/authorized_keys || echo ${pkey} >> /root/.ssh/authorized_keys; ${cmd}"
+        }
+
+        alias less='less -M -N -i'
+        alias les='/usr/share/vim/vim*/macros/less.sh'
+        alias tmux='tmux -2'
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
