@@ -133,10 +133,16 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
     # other
         function ssh {
-            [ -n "${2}" ] && local cmd="${2}" || cmd="exec \${SHELL} -i"
-            local pkey="$(cat ~/.ssh/id_rsa.pub)";
+            local cmd="${2:-exec \$SHELL -i}"
+            local pkey="$(cat ~/.ssh/id_rsa.pub)"
 
-            TERM=xterm command ssh -t "${1}" "grep \"${pkey}\" ~/.ssh/authorized_keys >/dev/null 2>&1 || echo ${pkey} >> ~/.ssh/authorized_keys 2>/dev/null; ${cmd}"
+            TERM=xterm command ssh -t "${1}" "
+                keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
+                mkdir -p ~/.ssh && chmod -R 640 ~/.ssh
+                grep \"${pkey}\" \${keys_file} > /dev/null 2>&1
+                echo ${pkey} >> \${keys_file} 2>/dev/null
+                ${cmd}
+            "
         }
 
         alias less='less -M -N -i'
