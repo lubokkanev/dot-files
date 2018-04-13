@@ -9,3 +9,5 @@
     diff = diff --ignore-space-at-eol
 	dif1 = diff --color-words --word-diff-regex=.
 	dif2 = diff --color-words
+[credential]
+	helper = cache
