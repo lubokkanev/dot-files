@@ -46,16 +46,16 @@ function git_branch_prompt {
 
 function prompt_command {
     local exit_code="$?"
-    PS1=""
 
     local red='\[\e[0;31m\]'
     local green='\[\e[0;32m\]'
     local yellow='\[\e[1;33m\]'
     local purple='\[\e[0;35m\]'
+    local blue='\[\e[0;36m\]'
+    local white='\[\e[m\]'
 
-    [ ${exit_code} -eq 0 ] && PS1+="${green}" || PS1+="${red}"
-
-    PS1+="> ${yellow}\t${red}|\[\e[36m\]\u${red}@${green}\h${red}:${purple}\W${yellow}\$(git_branch_prompt)${red}\$\[\e[m\] "
+    [ ${exit_code} -eq 0 ] && PS1="${green}" || PS1="${red}"
+    PS1+="> ${yellow}\t${red}|${blue}\u${red}@${green}\h${red}:${purple}\W${yellow}\$(git_branch_prompt)${red}\$${white} "
 }
 PROMPT_COMMAND=prompt_command
 
@@ -133,10 +133,10 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
     # other
         function ssh {
-            [ -n "${2}" ] && local cmd="${2}" || cmd="exec bash -i"
+            [ -n "${2}" ] && local cmd="${2}" || cmd="exec \${SHELL} -i"
             local pkey="$(cat ~/.ssh/id_rsa.pub)";
 
-            TERM=xterm command ssh -t "${1}" "grep -q \"${pkey}\" ~/.ssh/authorized_keys || echo ${pkey} >> ~/.ssh/authorized_keys; ${cmd}"
+            TERM=xterm command ssh -t "${1}" "grep \"${pkey}\" ~/.ssh/authorized_keys >/dev/null 2>&1 || echo ${pkey} >> ~/.ssh/authorized_keys 2>/dev/null; ${cmd}"
         }
 
         alias less='less -M -N -i'
