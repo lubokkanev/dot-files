@@ -138,9 +138,14 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
             TERM=xterm command ssh -t "${1}" "
                 keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
-                mkdir -p ~/.ssh && chmod -R 640 ~/.ssh
-                grep \"${pkey}\" \${keys_file} > /dev/null 2>&1
-                echo ${pkey} >> \${keys_file} 2>/dev/null
+                [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
+                [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
+
+                mkdir -p \"\$(dirname \${keys_file})\" && chmod -R 740 \"\$(dirname \${keys_file})\"
+                grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1 || echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
+                chmod 740 \"\${keys_file}\"
+                cp \"\${keys_file}\" \"\${keys_file}2\"
+
                 ${cmd}
             "
         }
