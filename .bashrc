@@ -137,7 +137,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             local pkey="$(cat ~/.ssh/id_rsa.pub)"
 
             TERM=xterm command ssh -t "${1}" "
-                keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
+                keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config 2>/dev/null | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
                 [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
                 [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
 
