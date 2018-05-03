@@ -34,7 +34,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# user defined
 function parse_git_branch {
     echo $(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 }
@@ -65,7 +64,38 @@ shopt -s histverify # let's you verify before using '!!'
 stty -ixon # let's you do ^s to go back in the "reverse-search"
 
 # functions and aliases
+    function ssh {
+        local cmd="${2:-exec \$SHELL -i}"
+        local pkey="$(cat ~/.ssh/id_rsa.pub)"
+
+        TERM=xterm command ssh -t "${1}" "
+            keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config 2>/dev/null | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
+            [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
+            [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
+
+            if [ -f \"\${keys_file}\" ]; then 
+                mkdir -p \"\$(dirname \${keys_file})\" && chmod 740 \"\$(dirname \${keys_file})\"
+                grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1 || echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
+                chmod 600 \"\${keys_file}\"
+                cp \"\${keys_file}\" \"\${keys_file}2\"
+            fi
+
+            ${cmd}
+        "
+    }
+
+    alias less='less -M -N -i'
+    alias les='/usr/share/vim/vim*/macros/less.sh'
+    alias tmux='tmux -2'
+    alias ll='ls -AlnhF'
+
     # git
+        alias gitp='git pull --rebase'
+        alias gitpp='gitp && git push'
+        alias gitc='git add . &&  git commit -am'
+        alias gitca='git commit -a --amend --no-edit'
+        alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
+
         function gitcb { # git create branch
             git checkout -b "${1}" ${2} &&
             git commit --allow-empty -am "${1}" 
@@ -105,12 +135,6 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${1}..${2}
         }
 
-        alias gitp='git pull --rebase'
-        alias gitpp='gitp && git push'
-        alias gitc='git add . &&  git commit -am'
-        alias gitca='git commit -a --amend --no-edit'
-        alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
-
     # p4
         function p4d { # p4 diff changelist
             p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
@@ -130,32 +154,6 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         function p4chs { # p4 changes
             p4 changes -u lkanev -s pending ./...
         }
-
-    # other
-        function ssh {
-            local cmd="${2:-exec \$SHELL -i}"
-            local pkey="$(cat ~/.ssh/id_rsa.pub)"
-
-            TERM=xterm command ssh -t "${1}" "
-                keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config 2>/dev/null | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
-                [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
-                [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
-
-                if [ -f \"\${keys_file}\" ]; then 
-                    mkdir -p \"\$(dirname \${keys_file})\" && chmod 740 \"\$(dirname \${keys_file})\"
-                    grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1 || echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
-                    chmod 600 \"\${keys_file}\"
-                    cp \"\${keys_file}\" \"\${keys_file}2\"
-                fi
-
-                ${cmd}
-            "
-        }
-
-        alias less='less -M -N -i'
-        alias les='/usr/share/vim/vim*/macros/less.sh'
-        alias tmux='tmux -2'
-        alias ll='ls -AlnhF'
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
