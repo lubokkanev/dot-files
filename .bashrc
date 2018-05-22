@@ -147,7 +147,9 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
         }
 
-        alias p4chs='p4 changes -u lkanev -s pending'
+        function p4chs { # p4 changes
+            p4 changes -u lkanev -s pending | grep $(p4 -Ztag -F %clientName% info) --color=none
+        }
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
