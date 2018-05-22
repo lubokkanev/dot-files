@@ -135,11 +135,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         function p4ch { # p4 change
             if [ -n "${1}" ]; then
                 p4 edit -c "${1}" ./... > /dev/null &&
-                p4 revert -a ./... > /dev/null
+                p4 revert -a > /dev/null
             else
                 p4 edit ./... > /dev/null &&
-                p4 revert -a ./... > /dev/null && 
-                p4 change 
+                p4 revert -a > /dev/null &&
+                p4 change
             fi
         }
 
