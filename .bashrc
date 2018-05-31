@@ -95,6 +95,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         alias gitc='git add . &&  git commit -am'
         alias gitca='git commit -a --amend --no-edit'
         alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
+        alias gitcach='gitca && gitch "${1}"'
 
         function gitcb { # git create branch
             git checkout -b "${1}" ${2} &&
@@ -111,11 +112,6 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             else
                 git checkout ${1}
             fi
-        }
-
-        function gitcach { # git commit amend, checkout
-            gitca &&
-            gitch "${1}"
         }
 
         function gitsb { # git submit branch
@@ -136,10 +132,6 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
     # p4
-        function p4d { # p4 diff changelist
-            p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
-        }
-
         function p4ch { # p4 change
             if [ -n "${1}" ]; then
                 p4 edit -c "${1}" ./... > /dev/null &&
@@ -151,9 +143,8 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             fi
         }
 
-        function p4chs { # p4 changes
-            p4 changes -u lkanev -s pending ./...
-        }
+        alias p4chs='p4 changes -u lkanev -s pending'
+        alias p4d="p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff"
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
