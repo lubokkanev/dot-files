@@ -143,8 +143,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             fi
         }
 
+        function p4d { # p4 changelist diff
+            p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
+        }
+
         alias p4chs='p4 changes -u lkanev -s pending'
-        alias p4d="p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff"
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
