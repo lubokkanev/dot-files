@@ -95,7 +95,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         alias gitc='git add . &&  git commit -am'
         alias gitca='git commit -a --amend --no-edit'
         alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
-        alias gitcach='gitca && gitch "${1}"'
+        alias gitcach='gitca && gitch'
         alias gitdh='git diff HEAD^'
 
         function gitcb { # git create branch
