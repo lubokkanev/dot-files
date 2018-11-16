@@ -156,7 +156,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function p4chs { # p4 changes
-            p4 changes -u lkanev -s pending | grep $(p4 -Ztag -F %clientName% info) --color=none
+            p4 changes -u lkanev -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
 export JAVA_HOME="/usr"
