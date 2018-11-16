@@ -159,6 +159,13 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             p4 changes -u lkanev -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
+    # mixed
+        function g4sb { # p4 and git - submit branch and changelist
+            [ $(p4 sync ./... 2>&1 | wc -l) == 1 ] &&
+            p4 submit -c "${1}" &&
+            gitsb
+        }
+
 export JAVA_HOME="/usr"
 export EDITOR=vim
 export P4CONFIG=.p4config
