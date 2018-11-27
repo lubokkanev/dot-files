@@ -166,6 +166,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             gitsb
         }
 
+        function g4mcb { # p4 and git - master create branch and changelist
+            gitmcb "${1}" &&
+            p4ch
+        }
+
 export JAVA_HOME="/usr"
 export EDITOR=vim
 export P4CONFIG=.p4config
