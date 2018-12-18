@@ -73,12 +73,14 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
             [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
 
-            if [ -f \"\${keys_file}\" ]; then 
+            if [ ! -f \"\${keys_file}\" ]; then
                 mkdir -p \"\$(dirname \${keys_file})\" && chmod 740 \"\$(dirname \${keys_file})\"
-                grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1 || echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
-                chmod 600 \"\${keys_file}\"
-                cp \"\${keys_file}\" \"\${keys_file}2\"
+                touch \"\${keys_file}\"
             fi
+
+            grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1 || echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
+            chmod 600 \"\${keys_file}\"
+            cp \"\${keys_file}\" \"\${keys_file}2\"
 
             ${cmd}
         "
