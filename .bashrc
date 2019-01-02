@@ -78,7 +78,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
                 touch \"\${keys_file}\"
             fi
 
-            if [ ! grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1 ]; then
+            if ! grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1; then
                 echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
                 chmod 600 \"\${keys_file}\"
                 cp \"\${keys_file}\" \"\${keys_file}2\"
