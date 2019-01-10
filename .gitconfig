@@ -12,4 +12,4 @@
 [credential]
 	helper = cache --timeout=604800 # a week
 [push]
-	default = simple
+	default = matching
