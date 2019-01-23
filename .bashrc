@@ -98,20 +98,33 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         alias gitpp='gitp && git push'
         alias gitc='git add . &&  git commit -am'
         alias gitca='git commit -a --amend --no-edit'
-        alias gitmr='set -f && for branch in $(git branch); do if [ "${branch}" != "*" ]; then if ! git rebase master "${branch}"; then break; fi; fi; done && git checkout master && set +f'
         alias gitcach='gitca && gitch'
 
+        function gitmr { # git master rebase
+            # set -f changes the file listing format
+            set -f &&
+                for branch in $(git branch); do
+                    if [ "${branch}" != "*" ]; then
+                        if ! git rebase master "${branch}"; then
+                            break;
+                        fi;
+                    fi;
+                done &&
+
+                git checkout master &&
+            set +f
+        }
+
         function gitdh { # git diff head
-            if [ -z "${1}" ]; then
-                git diff HEAD~1
-            else
-                git diff HEAD~${1}
-            fi
+            echo "Printing diff of HEAD~${1:-1}..." &&
+            git diff HEAD~${1:-1}
         }
 
         function gitcb { # git create branch
+            echo "Creating branch '${1}' from '${2:-master}'..." &&
             git checkout -b "${1}" ${2} &&
-            git commit --allow-empty -am "${1}" 
+            echo "Creating a commit from the new changes..." &&
+            git commit --allow-empty -am "${1}"
         }
 
         function gitmcb { # git create branch from master
@@ -119,11 +132,8 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitch { # git checkout
-            if [ -z ${1} ]; then
-                git checkout master
-            else
-                git checkout ${1}
-            fi
+            echo "Switching to branch '${1:-master}'..." &&
+            git checkout ${1:-master}
         }
 
         function gitsb { # git submit branch
@@ -132,41 +142,57 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
                 branch=$(parse_git_branch)
             fi
 
-            git checkout master && 
-            git rebase ${branch} master && 
-            git branch -d ${branch} && 
-            gitmr && 
-            git remote get-url origin > /dev/null 2>&1 && gitpp
+            git checkout master &&
+            echo "Replaying on top of 'master'..." &&
+            git rebase ${branch} master &&
+            echo "Removing branch '${branch}'..." &&
+            git branch -d ${branch} &&
+            echo "Replaying on top of all branches..." &&
+            gitmr &&
+            git remote get-url origin > /dev/null 2>&1 &&
+            echo "Pull-pushing on remote..." &&
+            gitpp
         }
 
         function gitbd { # git branch diff
-            git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${1}..${2}
+            echo "Showing diff between branch '${1:-master}' and branch '${2:-$(parse_git_branch)}'..." &&
+            git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${1:-master}..${2:-$(parse_git_branch)}
         }
 
     # p4
         function p4ch { # p4 change
             if [ -n "${1}" ]; then
+                echo "Opening all files for edit on changelist '${1}'..." &&
                 p4 edit -c "${1}" ./... > /dev/null &&
+                echo "Reverting all non-changed files..." &&
                 p4 revert -a > /dev/null
             else
+                echo "Opening all files for edit on the default changelist..." &&
                 p4 edit ./... > /dev/null &&
+                echo "Reverting all non-changed files..." &&
                 p4 revert -a > /dev/null &&
+                echo "Putting the edited files in a new changelist..." &&
                 p4 change
             fi
         }
 
         function p4d { # p4 changelist diff
+            echo "Showing diff of changelist '${1}'..." &&
             p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
         }
 
         function p4chs { # p4 changes
+            echo "Showing lkanev's pending changes on this client..." &&
             p4 changes -u lkanev -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
     # mixed
         function g4sb { # p4 and git - submit branch and changelist
+            echo "Syncing with p4..." &&
             [ $(p4 sync ./... 2>&1 | wc -l) == 1 ] &&
+            echo "No changes. Submitting to p4..." &&
             p4 submit -c "${1}" &&
+            echo "Submitting in git..."
             gitsb
         }
 
