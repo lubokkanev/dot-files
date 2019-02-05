@@ -192,7 +192,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             [ $(p4 sync ./... 2>&1 | wc -l) == 1 ] &&
             echo "No changes. Submitting to p4..." &&
             p4 submit -c "${1}" &&
-            echo "Submitting in git..."
+            echo "Submitting in git..." &&
             gitsb
         }
 
