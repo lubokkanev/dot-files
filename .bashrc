@@ -133,20 +133,20 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
         function gitch { # git checkout
             echo "Switching to branch '${1:-master}'..." &&
-            git checkout ${1:-master}
+            git checkout "${1:-master}"
         }
 
         function gitsb { # git submit branch
-            local branch=${1}
+            local branch="${1}"
             if [ -z "${branch}" ]; then
-                branch=$(parse_git_branch)
+                branch="$(parse_git_branch)"
             fi
 
             git checkout master &&
             echo "Replaying on top of 'master'..." &&
-            git rebase ${branch} master &&
+            git rebase "${branch}" master &&
             echo "Removing branch '${branch}'..." &&
-            git branch -d ${branch} &&
+            git branch -d "${branch}" &&
             echo "Replaying on top of all branches..." &&
             gitmr &&
             git remote get-url origin > /dev/null 2>&1 &&
@@ -183,7 +183,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
         function p4chs { # p4 changes
             echo "Showing lkanev's pending changes on this client..." &&
-            p4 changes -u lkanev -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
+            p4 changes -u lkanev -s pending "${1}" | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
     # mixed
