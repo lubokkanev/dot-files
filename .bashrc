@@ -29,9 +29,9 @@ if [ -x /usr/bin/dircolors ]; then
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto -n'
+    alias fgrep='fgrep --color=auto -n'
+    alias egrep='egrep --color=auto -n'
 fi
 
 function parse_git_branch {
@@ -118,6 +118,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         function gitdh { # git diff head
             echo "Printing diff of HEAD~${1:-1}..." &&
             git diff HEAD~${1:-1}
+        }
+
+        function gitsh { # git show head
+            echo "Showing HEAD~${1:-0}"
+            git show HEAD~${1:-0}
         }
 
         function gitcb { # git create branch
