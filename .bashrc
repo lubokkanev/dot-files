@@ -187,8 +187,9 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function p4chs { # p4 changes
-            echo "Showing lkanev's pending changes on this client..." &&
-            p4 changes -u lkanev -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
+            user=$(p4 info | head -n1 | sed 's,User name: \(.*\),\1,')
+            echo "Showing ${user}'s pending changes on this client..." &&
+            p4 changes -u "${user}" -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
     # mixed
