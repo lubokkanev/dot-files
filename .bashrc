@@ -117,7 +117,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
         function gitdh { # git diff head
             echo "Printing diff of HEAD~${1:-1}..." &&
-            git diff HEAD~${1:-1}
+            git diff HEAD~${1:-1} ${2}
         }
 
         function gitsh { # git show head
@@ -147,6 +147,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
                 branch="$(parse_git_branch)"
             fi
 
+            [ "${branch}" != master ] &&
             git checkout master &&
             echo "Replaying on top of 'master'..." &&
             git rebase "${branch}" master &&
@@ -192,12 +193,16 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             p4 changes -u "${user}" -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
-    # mixed
-        function g4sb { # p4 and git - submit branch and changelist
+        function p4pp { # p4 pull push
             echo "Syncing with p4..." &&
             [ $(p4 sync ./... 2>&1 | wc -l) == 1 ] &&
-            echo "No changes. Submitting to p4..." &&
-            p4 submit -c "${1}" &&
+            echo "No changes. Submitting changelist '${1}' to p4..." &&
+            p4 submit -c "${1}"
+        }
+
+    # mixed
+        function g4sb { # p4 and git - submit branch and changelist
+            p4pp &&
             echo "Submitting in git..." &&
             gitsb
         }
