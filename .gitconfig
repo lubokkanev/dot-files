@@ -13,3 +13,5 @@
 	helper = cache --timeout=604800 # a week
 [push]
 	default = matching
+[core]
+	autocrlf = false

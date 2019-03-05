@@ -165,6 +165,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${1:-master}..${2:-$(parse_git_branch)}
         }
 
+        function gitf { #git files
+            echo "Showing the edit files in the given commit '${!}'..."
+            git  diff-tree --no-commit-id --name-only -r "${1}"
+        }
+
     # p4
         function p4ch { # p4 change
             if [ -n "${1}" ]; then
