@@ -166,8 +166,13 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitf { #git files
-            echo "Showing the edit files in the given commit '${!}'..."
-            git  diff-tree --no-commit-id --name-only -r "${1}"
+            echo "Showing the edit files in commit '${1:-HEAD}'..."
+            git diff-tree --no-commit-id --name-only -r "${1:-HEAD}"
+        }
+
+        function gitfs { #git files since
+            echo "Showing the edit files since commit '${1:-HEAD^}'..."
+            git diff-tree --no-commit-id --name-only -r "${1:-HEAD^}" HEAD
         }
 
     # p4
