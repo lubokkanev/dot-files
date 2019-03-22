@@ -15,3 +15,5 @@
 	default = matching
 [core]
 	autocrlf = false
+[rerere]
+	enabled = 1
