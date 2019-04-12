@@ -161,8 +161,8 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitbd { # git branch diff
-            echo "Showing diff between branch '${1:-master}' and branch '${2:-$(parse_git_branch)}'..." &&
-            git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${1:-master}..${2:-$(parse_git_branch)}
+            echo "Showing diff between branch '${2:-master}' and branch '${1:-$(parse_git_branch)}'..." &&
+            git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${2:-master}..${1:-$(parse_git_branch)}
         }
 
         function gitf { #git files
@@ -172,7 +172,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
         function gitfs { #git files since
             echo "Showing the edit files since commit '${1:-HEAD^}'..."
-            git diff-tree --no-commit-id --name-only -r "${1:-HEAD^}" HEAD
+            git diff-tree --no-commit-id --name-only -r "${1^:-HEAD^}" HEAD
         }
 
         function gitfb { #git files branch
@@ -216,7 +216,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
     # mixed
         function g4sb { # p4 and git - submit branch and changelist
-            p4pp &&
+            p4pp "${1}" &&
             echo "Submitting in git..." &&
             gitsb
         }
@@ -224,6 +224,23 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         function g4mcb { # p4 and git - master create branch and changelist
             gitmcb "${1}" &&
             p4ch
+        }
+
+        function g4ch { # p4 and git - checkout branch
+            git checkout master &&
+            p4 revert -a &&
+            git checkout "${1}" &&
+            p4chc HEAD^ ${2}
+        }
+
+        function g4chc { # p4 and git - change commit
+            echo "Editing files from git commit '${1}' and putting them in p4 change '${2:-new}'"
+            p4 revert -a > /dev/null &&
+            gitf "${1:-$(gitfb)}" | tail -n +2 | xargs p4 edit ${2:+-c ${2}} || p4 reopen -c "${2}" &&
+
+            if [ -z "${2}" ]; then
+                p4 change
+            fi
         }
 
 export JAVA_HOME="/usr"
