@@ -175,6 +175,10 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             git diff-tree --no-commit-id --name-only -r "${1:-HEAD^}" HEAD
         }
 
+        function gitfb { #git files branch
+            gitfs "$(git log | command grep "    [^-]" -m 1 -B 4 | head -n1 | sed 's,commit \(.*\),\1,')"^
+        }
+
     # p4
         function p4ch { # p4 change
             if [ -n "${1}" ]; then
@@ -226,5 +230,5 @@ export JAVA_HOME="/usr"
 export EDITOR=vim
 export P4CONFIG=.p4config
 
-[ -r ~/.additionalrc ] && source ~/.additionalrc
+[ -r ~/.additionalrc     ] && source ~/.additionalrc
 [ -r ~/git-completion.sh ] && source ~/git-completion.sh
