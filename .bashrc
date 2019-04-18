@@ -128,6 +128,10 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             git diff HEAD~${1:-1} ${2}
         }
 
+        function gitdb { # git diff branch
+            git diff "$(gitic)^"
+        }
+
         function gitsh { # git show head
             echo "Showing HEAD~${1:-0}"
             git show HEAD~${1:-0}
@@ -184,7 +188,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitfb { #git files branch
-            gitfs "$(git log | command grep "    [^-]" -m 1 -B 4 | head -n1 | sed 's,commit \(.*\),\1,')"^
+            gitfs "$(gitic)"^
+        }
+
+        function gitic { #git initial branch commit
+            git log | command grep "    [^-]" -m 1 -B 4 | head -n1 | sed 's,commit \(.*\),\1,'
         }
 
     # p4
