@@ -88,6 +88,10 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         "
     }
 
+    function getfs { # get functions
+        grep "^\s*function" ~/.bashrc
+    }
+
     alias less='less -M -N -i'
     alias les='/usr/share/vim/vim*/macros/less.sh'
     alias tmux='tmux -2'
