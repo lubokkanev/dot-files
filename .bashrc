@@ -96,9 +96,17 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
     # git
         alias gitp='git pull --rebase'
         alias gitpp='gitp && git push'
-        alias gitc='git add . &&  git commit -am'
         alias gitca='git commit -a --amend --no-edit'
         alias gitcach='gitca && gitch'
+
+        function gitc { # git commit 
+            git add . &&
+            git commit -am "${1}"
+        }
+
+        function gitsc { # git sub-commit
+            gitc "---> ${1}"
+        }
 
         function gitmr { # git master rebase
             # set -f changes the file listing format
@@ -166,13 +174,13 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitf { #git files
-            echo "Showing the edit files in commit '${1:-HEAD}'..."
+            echo "Showing the edited files in commit '${1:-HEAD}'..."
             git diff-tree --no-commit-id --name-only -r "${1:-HEAD}"
         }
 
         function gitfs { #git files since
-            echo "Showing the edit files since commit '${1:-HEAD^}'..."
-            git diff-tree --no-commit-id --name-only -r "${1^:-HEAD^}" HEAD
+            echo "Showing the edited files since commit '${1:-HEAD^}'..."
+            git diff-tree --no-commit-id --name-only -r "${1:-HEAD^}" HEAD
         }
 
         function gitfb { #git files branch
@@ -237,6 +245,17 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             echo "Editing files from git commit '${1}' and putting them in p4 change '${2:-new}'"
             p4 revert -a > /dev/null &&
             gitf "${1:-$(gitfb)}" | tail -n +2 | xargs p4 edit ${2:+-c ${2}} || p4 reopen -c "${2}" &&
+
+            if [ -z "${2}" ]; then
+                p4 change
+            fi
+        }
+
+        function g4chs { # p4 and git - change since
+            echo "Editing files since git commit '${1}' and putting them in p4 change '${2:-new}'"
+
+            p4 revert -a > /dev/null &&
+            gitfs "${1:-$(gitfb)}" | tail -n +2 | xargs p4 edit ${2:+-c ${2}} || p4 reopen -c "${2}" &&
 
             if [ -z "${2}" ]; then
                 p4 change
