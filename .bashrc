@@ -227,6 +227,12 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             p4 changes -u "${user}" -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
+        function p4p { # p4 pull
+            echo "Syncing with p4..." &&
+            p4 sync ./... &&
+            p4 resolve
+        }
+
         function p4pp { # p4 pull push
             echo "Syncing with p4..." &&
             [ $(p4 sync ./... 2>&1 | wc -l) == 1 ] &&
