@@ -133,7 +133,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitdb { # git diff branch
-            git diff "$(gitic)^"
+            git diff "$(gitic)"
         }
 
         function gitsh { # git show head
@@ -192,11 +192,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitfb { #git files branch
-            gitfs "$(gitic)"^
+            gitfs "$(gitic)"
         }
 
         function gitic { #git initial branch commit
-            git log | command grep "    [^-]" -m 1 -B 4 | head -n1 | sed 's,commit \(.*\),\1,'
+            git log | command grep "    [^-]" -m 1 -B 4 | head -n1 | sed 's,commit \(.*\),\1^,'
         }
 
     # p4
