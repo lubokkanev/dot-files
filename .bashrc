@@ -249,7 +249,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
         function g4mcb { # p4 and git - master create branch and changelist
             gitmcb "${1}" &&
-            p4ch
+            g4chb
         }
 
         function g4ch { # p4 and git - checkout branch
