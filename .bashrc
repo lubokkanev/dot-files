@@ -244,6 +244,24 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             p4 submit -c "${1}"
         }
 
+        function p4echs { # p4 export changes
+            number=1
+
+            while read -r change; do
+                clnum=$(echo $change | sed 's,\([0-9]\+\).*,\1,g')
+
+                if [ $number -eq 1 ]; then
+                    export cln=$clnum
+                    echo cln = $change
+                else
+                    export cln$number=$clnum
+                    echo cln$number = $change
+                fi
+
+                number=$((number+1))
+            done <<< $(p4chs | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g')
+        }
+
     # mixed
         export git_root=$(git rev-parse --show-toplevel)
 
