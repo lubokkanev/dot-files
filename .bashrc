@@ -89,7 +89,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
     }
 
     function getfs { # get functions
-        grep "^\s*function" ~/.bashrc
+        grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'
+    }
+
+    function getvcfs { # get version control functions
+        getfs | tail -n +7
     }
 
     alias less='less -M -N -i'
