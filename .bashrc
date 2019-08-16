@@ -103,7 +103,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         alias gitca='git commit -a --amend --no-edit'
         alias gitcach='gitca && gitch'
 
-        function gitc { # git commit 
+        function gitc { # git commit
             git add . &&
             git commit -am "${1}"
         }
@@ -273,10 +273,13 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             echo "Editing files since git commit '${1}' and putting them in p4 change '${2:-new}'"
 
             p4 revert -a > /dev/null &&
-            gitfs "${1}" | tail -n +2 | xargs p4 edit ${2:+-c ${2}} || xargs p4 reopen -c "${2}" &&
+            edited_files=$(gitfs "${1}" | tail -n +2) &&
+            echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
 
             if [ -z "${2}" ]; then
                 p4 change
+            else
+                echo $edited_files | xargs p4 reopen -c "${2}"
             fi
         }
 
