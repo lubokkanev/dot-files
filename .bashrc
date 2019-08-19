@@ -247,7 +247,8 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         function p4echs { # p4 export changes
             number=1
 
-            while read -r change; do
+            delim='%'
+            while read -r -d $delim change; do
                 clnum=$(echo $change | sed 's,\([0-9]\+\).*,\1,g')
 
                 if [ $number -eq 1 ]; then
@@ -259,7 +260,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
                 fi
 
                 number=$((number+1))
-            done <<< $(p4chs | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g')
+            done <<< $(p4chs | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g' | tr '\r\n' $delim)
         }
 
     # mixed
