@@ -217,6 +217,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
                 p4 revert -a > /dev/null &&
                 echo "Putting the edited files in a new changelist..." &&
                 p4 change
+                p4echs
             fi
         }
 
@@ -294,6 +295,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
             if [ -z "${2}" ]; then
                 p4 change
+                p4echs
             else
                 echo $edited_files | xargs p4 reopen -c "${2}"
             fi
@@ -309,6 +311,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
             if [ -z "${2}" ]; then
                 p4 change
+                p4echs
             else
                 echo $edited_files | xargs p4 reopen -c "${2}"
             fi
