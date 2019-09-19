@@ -88,11 +88,11 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         "
     }
 
-    function getfs { # get functions
+    function getfs { # get functions :
         grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'
     }
 
-    function getvcfs { # get version control functions
+    function getvcfs { # get version control functions :
         getfs | tail -n +7
     }
 
@@ -107,16 +107,16 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         alias gitca='git commit -a --amend --no-edit'
         alias gitcach='gitca && gitch'
 
-        function gitc { # git commit
+        function gitc { # git commit : [message]
             git add . &&
             git commit -am "${1}"
         }
 
-        function gitsc { # git sub-commit
+        function gitsc { # git sub-commit : [message]
             gitc "---> ${1}"
         }
 
-        function gitmr { # git master rebase
+        function gitmr { # git master rebase :
             # set -f changes the file listing format
             set -f &&
                 for branch in $(git branch); do
@@ -131,37 +131,37 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             set +f
         }
 
-        function gitdh { # git diff head
+        function gitdh { # git diff head : [back], [commit]
             echo "Printing diff of HEAD~${1:-1}..." &&
             git diff HEAD~${1:-1} ${2}
         }
 
-        function gitdb { # git diff branch
+        function gitdb { # git diff branch :
             git diff "$(gitic)"
         }
 
-        function gitsh { # git show head
+        function gitsh { # git show head : [back]
             echo "Showing HEAD~${1:-0}"
             git show HEAD~${1:-0}
         }
 
-        function gitcb { # git create branch
+        function gitcb { # git create branch : branch, [branch]
             echo "Creating branch '${1}' from '${2:-master}'..." &&
             git checkout -b "${1}" ${2} &&
             echo "Creating a commit from the new changes..." &&
             git commit --allow-empty -am "${1}"
         }
 
-        function gitmcb { # git create branch from master
+        function gitmcb { # git create branch from master : branch
             gitcb "${1}" master
         }
 
-        function gitch { # git checkout
+        function gitch { # git checkout : [branch]
             echo "Switching to branch '${1:-master}'..." &&
             git checkout "${1:-master}"
         }
 
-        function gitsb { # git submit branch
+        function gitsb { # git submit branch : [branch]
             local branch="${1}"
             if [ -z "${branch}" ]; then
                 branch="$(parse_git_branch)"
@@ -180,31 +180,31 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             gitpp
         }
 
-        function gitbd { # git branch diff
+        function gitbd { # git branch diff : [branch], [branch]
             echo "Showing diff between branch '${2:-master}' and branch '${1:-$(parse_git_branch)}'..." &&
             git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${2:-master}..${1:-$(parse_git_branch)}
         }
 
-        function gitf { #git files
+        function gitf { #git files : [commit]
             echo "Showing the edited files in commit '${1:-HEAD}'..."
             git diff-tree --no-commit-id --name-only -r "${1:-HEAD}"
         }
 
-        function gitfs { #git files since
+        function gitfs { #git files since : [commit]
             echo "Showing the edited files since commit '${1:-HEAD^}'..."
             git diff-tree --no-commit-id --name-only -r "${1:-HEAD^}" HEAD
         }
 
-        function gitfb { #git files branch
+        function gitfb { #git files branch :
             gitfs "$(gitic)"
         }
 
-        function gitic { #git initial branch commit
+        function gitic { #git initial branch commit :
             git log | command grep "    [^-]" -m 1 -B 4 | head -n1 | sed 's,commit \(.*\),\1^,'
         }
 
     # p4
-        function p4ch { # p4 change
+        function p4ch { # p4 change : [cln]
             if [ -n "${1}" ]; then
                 echo "Opening all files for edit on changelist '${1}'..." &&
                 p4 edit -c "${1}" ./... > /dev/null &&
@@ -221,31 +221,31 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             fi
         }
 
-        function p4d { # p4 changelist diff
+        function p4d { # p4 changelist diff : cln
             echo "Showing diff of changelist '${1}'..." &&
             p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
         }
 
-        function p4chs { # p4 changes
+        function p4chs { # p4 changes : [path]
             user=$(p4 info | head -n1 | sed 's,User name: \(.*\),\1,')
             echo "Showing ${user}'s pending changes on this client..." &&
             p4 changes -u "${user}" -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
         }
 
-        function p4p { # p4 pull
+        function p4p { # p4 pull :
             echo "Syncing with p4..." &&
             p4 sync ./... &&
             p4 resolve
         }
 
-        function p4pp { # p4 pull push
+        function p4pp { # p4 pull push : cln
             echo "Syncing with p4..." &&
             [ $(p4 sync ./... 2>&1 | wc -l) == 1 ] &&
             echo "No changes. Submitting changelist '${1}' to p4..." &&
             p4 submit -c "${1}"
         }
 
-        function p4echs { # p4 export changes
+        function p4echs { # p4 export changes :
             number=1
 
             delim='%'
@@ -267,25 +267,25 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
     # mixed
         export git_root=$(git rev-parse --show-toplevel)
 
-        function g4sb { # p4 and git - submit branch and changelist
+        function g4sb { # p4 and git - submit branch and changelist : cln
             p4pp "${1}" &&
             echo "Submitting in git..." &&
             gitsb
         }
 
-        function g4mcb { # p4 and git - master create branch and changelist
+        function g4mcb { # p4 and git - master create branch and changelist : branch
             gitmcb "${1}" &&
             g4chb
         }
 
-        function g4cb { # p4 and git - checkout gitbranch
+        function g4cb { # p4 and git - checkout gitbranch : branch, cln
             git checkout master &&
             p4 revert -a &&
             git checkout "${1}" &&
             g4chb ${2}
         }
 
-        function g4chc { # p4 and git - change commit
+        function g4chc { # p4 and git - change commit : branch, cln
             echo "Editing files from git commit '${1}' and putting them in p4 change '${2:-new}'"
 
             cd $git_root
@@ -301,7 +301,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             fi
         }
 
-        function g4chs { # p4 and git - change since
+        function g4chs { # p4 and git - change since : branch, cln
             echo "Editing files since git commit '${1}' and putting them in p4 change '${2:-new}'"
 
             cd $git_root
@@ -317,7 +317,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             fi
         }
 
-        function g4chb { # p4 and git - change branch
+        function g4chb { # p4 and git - change branch : cln
             g4chs "$(gitic)" "${1}"
         }
 
