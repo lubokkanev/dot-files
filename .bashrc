@@ -239,10 +239,17 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function p4pp { # p4 pull push : cln
-            echo "Syncing with p4..." &&
-            [ $(p4 sync ./... 2>&1 | wc -l) == 1 ] &&
-            echo "No changes. Submitting changelist '${1}' to p4..." &&
-            p4 submit -c "${1}"
+            echo "Syncing with p4..."
+
+            p4path=$(p4 -F %clientRoot% -ztag info)
+            p4path=pwd | sed "s,\($p4path[^/]*\).*,\1/...,"
+            if [ $(p4 sync ${p4path}/... 2>&1 | wc -l) == 1 ]; then
+                echo "No changes. Submitting changelist '${1}' to p4..."
+                p4 submit -c "${1}"
+            else
+                echo "There are changes. Resolving and quitting..."
+                p4 resolve
+            fi
         }
 
         function p4echs { # p4 export changes :
