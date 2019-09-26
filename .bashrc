@@ -253,6 +253,8 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function p4echs { # p4 export changes :
+            echo "Exporting Perforce changes to variables..."
+
             number=1
 
             delim='%'
