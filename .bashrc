@@ -233,21 +233,21 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function p4p { # p4 pull :
-            echo "Syncing with p4..." &&
+            echo "Syncing with Perforce..." &&
             p4 sync ./... &&
             p4 resolve
         }
 
         function p4pp { # p4 pull push : cln
-            echo "Syncing with p4..."
+            echo "Syncing with Perforce..."
 
             p4path=$(p4 -F %clientRoot% -ztag info)
             p4path=pwd | sed "s,\($p4path[^/]*\).*,\1/...,"
             if [ $(p4 sync ${p4path}/... 2>&1 | wc -l) == 1 ]; then
-                echo "No changes. Submitting changelist '${1}' to p4..."
+                echo "No changes. Submitting changelist '${1}' to Perforce..."
                 p4 submit -c "${1}"
             else
-                echo "There are changes. Resolving and quitting..."
+                echo "There are changes. Resolving..."
                 p4 resolve
             fi
         }
@@ -295,7 +295,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function g4chc { # p4 and git - change commit : branch, cln
-            echo "Editing files from git commit '${1}' and putting them in p4 change '${2:-new}'"
+            echo "Editing files from git commit '${1}' and putting them in Perforce change '${2:-new}'"
 
             cd $git_root
             p4 revert -a > /dev/null &&
@@ -311,7 +311,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function g4chs { # p4 and git - change since : branch, cln
-            echo "Editing files since git commit '${1}' and putting them in p4 change '${2:-new}'"
+            echo "Editing files since git commit '${1}' and putting them in Perforce change '${2:-new}'"
 
             cd $git_root
             p4 revert -a > /dev/null &&
