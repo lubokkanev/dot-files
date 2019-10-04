@@ -137,11 +137,12 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function gitdb { # git diff branch :
+            echo "Printing diff of the current branch..."
             git diff "$(gitic)"
         }
 
         function gitsh { # git show head : [back]
-            echo "Showing HEAD~${1:-0}"
+            echo "Showing HEAD~${1:-0}..."
             git show HEAD~${1:-0}
         }
 
@@ -249,6 +250,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             else
                 echo "There are changes. Resolving..."
                 p4 resolve
+                gitc "Sync"
             fi
         }
 
