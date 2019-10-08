@@ -112,8 +112,14 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             git commit -am "${1}"
         }
 
-        function gitsc { # git sub-commit : [message]
-            gitc "---> ${1}"
+        function gitsc { # git sub-commit : message, [levels]
+            local level=${2:-1}
+
+            for ((i=0; i<${level}; i++)); do
+                local prefix=${prefix}---
+            done
+
+            gitc "${prefix}> ${1}"
         }
 
         function gitmr { # git master rebase :
