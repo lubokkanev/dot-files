@@ -252,12 +252,13 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             p4path=pwd | sed "s,\($p4path[^/]*\).*,\1/...,"
             if [ $(p4 sync ${p4path}/... 2>&1 | wc -l) == 1 ]; then
                 echo "No changes. Submitting changelist '${1}' to Perforce..."
-                p4 submit -c "${1}"
             else
                 echo "There are changes. Resolving..."
                 p4 resolve
                 gitc "Sync"
             fi
+
+            p4 submit -c "${1}"
         }
 
         function p4echs { # p4 export changes :
