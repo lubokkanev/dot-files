@@ -255,6 +255,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             else
                 echo "There are changes. Resolving..."
                 p4 resolve
+                echo "Creating a 'Sync' git commit..."
                 gitc "Sync"
             fi
 
@@ -283,7 +284,9 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
     # mixed
-        export git_root=$(git rev-parse --show-toplevel)
+        function get_git_root {
+            git rev-parse --show-toplevel
+        }
 
         function g4sb { # p4 and git - submit branch and changelist : cln
             p4pp "${1}" &&
@@ -306,7 +309,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         function g4chc { # p4 and git - change commit : branch, cln
             echo "Editing files from git commit '${1}' and putting them in Perforce change '${2:-new}'"
 
-            cd $git_root
+            cd $(get_git_root)
             p4 revert -a > /dev/null &&
             edited_files=$(gitf "${1}" | tail -n +2) &&
             echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
@@ -322,7 +325,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         function g4chs { # p4 and git - change since : branch, cln
             echo "Editing files since git commit '${1}' and putting them in Perforce change '${2:-new}'"
 
-            cd $git_root
+            cd $(get_git_root)
             p4 revert -a > /dev/null &&
             edited_files=$(gitfs "${1}" | tail -n +2) &&
             echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
