@@ -144,7 +144,14 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 
         function gitdb { # git diff branch :
             echo "Printing diff of the current branch..."
-            git diff "$(gitic)"
+
+            if [ "${1}" == 1 ]; then
+                git dif1 "$(gitic)"
+            elif [ "${1}" == 2 ]; then
+                git dif2 "$(gitic)"
+            else
+                git diff "$(gitic)"
+            fi
         }
 
         function gitsh { # git show head : [back]
