@@ -166,10 +166,6 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             git commit --allow-empty -am "${1}"
         }
 
-        function gitmcb { # git create branch from master : branch
-            gitcb "${1}" master
-        }
-
         function gitch { # git checkout : [branch]
             echo "Switching to branch '${1:-master}'..." &&
             git checkout "${1:-master}"
@@ -301,8 +297,8 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             gitsb
         }
 
-        function g4mcb { # p4 and git - master create branch and changelist : branch
-            gitmcb "${1}" &&
+        function g4mcb { # p4 and git - master create branch and changelist : branch-name, branch
+            gitcb "${1}" "${2}" &&
             g4chb
         }
 
