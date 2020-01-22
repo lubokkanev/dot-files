@@ -332,6 +332,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             p4 revert -a > /dev/null &&
             edited_files=$(gitfs "${1}" | tail -n +2) &&
             echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
+            echo &&
 
             if [ -z "${2}" ]; then
                 p4 change
