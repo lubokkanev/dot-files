@@ -9,4 +9,5 @@
 !git-completion.sh
 !.tmux.conf
 !.gitconfig
+!.bash_profile
 
