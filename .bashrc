@@ -352,3 +352,6 @@ export P4CONFIG=.p4config
 
 [ -r ~/.additionalrc     ] && source ~/.additionalrc
 [ -r ~/git-completion.sh ] && source ~/git-completion.sh
+
+tmux a 2>/dev/null || tmux new 2>/dev/null
+
