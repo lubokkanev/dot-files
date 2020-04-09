@@ -9,6 +9,7 @@ set ff=unix
 syntax enable
 set hlsearch
 hi Search ctermbg=White
+hi Search ctermfg=Red
 
 " search the selected text by pressing //
 vnoremap // y/<C-R>"<CR> 
