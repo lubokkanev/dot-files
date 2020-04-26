@@ -283,7 +283,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
                 fi
 
                 number=$((number+1))
-            done <<< $(p4chs | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g' | tr '\r\n' $delim)
+            done <<< $(p4chs $* | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g' | tr '\r\n' $delim)
         }
 
     # mixed
@@ -351,7 +351,7 @@ export EDITOR=vim
 export P4CONFIG=.p4config
 
 [ -r ~/.additionalrc     ] && source ~/.additionalrc
-[ -r ~/git-completion.sh ] && source ~/git-completion.sh
+[ -r ~/.enable-git-completion.sh ] && source ~/.enable-git-completion.sh
 
 tmux a 2>/dev/null || tmux new 2>/dev/null
 

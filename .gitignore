@@ -6,7 +6,7 @@
 !.inputrc
 !.screenrc
 !.ssh/config
-!git-completion.sh
+!.enable-git-completion.sh
 !.tmux.conf
 !.gitconfig
 !.bash_profile
