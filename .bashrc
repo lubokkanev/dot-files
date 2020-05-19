@@ -351,7 +351,7 @@ export EDITOR=vim
 export P4CONFIG=.p4config
 
 [ -r ~/.additionalrc     ] && source ~/.additionalrc
-[ -r ~/.enable-git-completion.sh ] && source ~/.enable-git-completion.sh
+[ -r /usr/share/bash-completion/completions/git ] && source /usr/share/bash-completion/completions/git
 
 tmux a 2>/dev/null || tmux new 2>/dev/null
 
