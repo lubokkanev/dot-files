@@ -306,7 +306,10 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             git checkout master &&
             p4 revert -a &&
             git checkout "${1}" &&
-            g4chb ${2}
+
+            if [ -n "${2}" ]; then
+                g4chb ${2}
+            fi
         }
 
         function g4chc { # p4 and git - change commit : branch, cln
@@ -334,12 +337,16 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
             echo &&
 
+            local change="${2}"
             if [ -z "${2}" ]; then
                 p4 change
                 p4echs
+                change="$cln"
             else
                 echo $edited_files | xargs p4 reopen -c "${2}"
-            fi
+            fi &&
+
+            echo $edited_files | xargs p4 add -c ${change}
         }
 
         function g4chb { # p4 and git - change branch : cln
