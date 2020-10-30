@@ -332,7 +332,9 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
             echo "Editing files since git commit '${1}' and putting them in Perforce change '${2:-new}'"
 
             cd $(get_git_root)
+            git checkout master
             p4 revert -a > /dev/null &&
+            git checkout -
             edited_files=$(gitfs "${1}" | tail -n +2) &&
             echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
             echo &&
