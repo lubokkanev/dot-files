@@ -352,6 +352,10 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
         }
 
         function g4chb { # p4 and git - change branch : cln
+            if [ -n "${2}" ]; then
+                git checkout "${2}"
+            fi
+
             g4chs "$(gitic)" "${1}"
         }
 
