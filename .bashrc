@@ -64,306 +64,49 @@ shopt -s histverify # let's you verify before using '!!'
 stty -ixon # let's you do ^s to go back in the "reverse-search"
 
 # functions and aliases
-    function ssh {
-        local cmd="${2:-exec \$SHELL -i}"
-        local pkey="$(cat ~/.ssh/id_rsa.pub)"
+function ssh {
+    local cmd="${2:-exec \$SHELL -i}"
+    local pkey="$(cat ~/.ssh/id_rsa.pub)"
 
-        command ssh -t "${1}" "
-            keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config 2>/dev/null | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
-            [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
-            [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
+    command ssh -t "${1}" "
+        keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config 2>/dev/null | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
+        [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
+        [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
 
-            if [ ! -f \"\${keys_file}\" ]; then
-                mkdir -p \"\$(dirname \${keys_file})\" && chmod 740 \"\$(dirname \${keys_file})\"
-                touch \"\${keys_file}\"
-            fi
+        if [ ! -f \"\${keys_file}\" ]; then
+            mkdir -p \"\$(dirname \${keys_file})\" && chmod 740 \"\$(dirname \${keys_file})\"
+            touch \"\${keys_file}\"
+        fi
 
-            if ! grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1; then
-                echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
-                chmod 600 \"\${keys_file}\"
-                cp \"\${keys_file}\" \"\${keys_file}2\"
-            fi
+        if ! grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1; then
+            echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
+            chmod 600 \"\${keys_file}\"
+            cp \"\${keys_file}\" \"\${keys_file}2\"
+        fi
 
-            ${cmd}
-        "
-    }
+        ${cmd}
+    "
+}
 
-    function getfs { # get functions :
-        grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'
-    }
+function getfs { # get functions :
+    grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'
+}
 
-    function getvcfs { # get version control functions :
-        getfs | tail -n +7
-    }
+function getvcfs { # get version control functions :
+    getfs | tail -n +7
+}
 
-    alias less='less -M -N -i'
-    alias les='/usr/share/vim/vim*/macros/less.sh'
-    alias tmux='tmux -2'
-    alias ll='ls -AlnhF'
-
-    # git
-        alias gitp='git pull --rebase'
-        alias gitpp='gitp && git push'
-        alias gitca='git commit -a --amend --no-edit'
-        alias gitcach='gitca && gitch'
-
-        function gitc { # git commit : [message]
-            git add . &&
-            git commit -am "${1}"
-        }
-
-        function gitsc { # git sub-commit : message, [levels]
-            local level=${2:-1}
-
-            for ((i=0; i<${level}; i++)); do
-                local prefix=${prefix}---
-            done
-
-            gitc "${prefix}> ${1}"
-        }
-
-        function gitmr { # git master rebase :
-            # set -f changes the file listing format
-            set -f &&
-                for branch in $(git branch); do
-                    if [ "${branch}" != "*" ]; then
-                        if ! git rebase master "${branch}"; then
-                            break;
-                        fi;
-                    fi;
-                done &&
-
-                git checkout master &&
-            set +f
-        }
-
-        function gitdh { # git diff head : [back], [commit]
-            echo "Printing diff of HEAD~${1:-1}..." &&
-            git diff HEAD~${1:-1} ${2}
-        }
-
-        function gitdb { # git diff branch :
-            echo "Printing diff of the current branch..."
-
-            if [ "${1}" == 1 ]; then
-                git dif1 "$(gitic)"
-            elif [ "${1}" == 2 ]; then
-                git dif2 "$(gitic)"
-            else
-                git diff "$(gitic)"
-            fi
-        }
-
-        function gitsh { # git show head : [back]
-            echo "Showing HEAD~${1:-0}..."
-            git show HEAD~${1:-0}
-        }
-
-        function gitcb { # git create branch : branch, [branch]
-            echo "Creating branch '${1}' from '${2:-master}'..." &&
-            git checkout -b "${1}" ${2} &&
-            echo "Creating a commit from the new changes..." &&
-            git commit --allow-empty -am "${1}"
-        }
-
-        function gitch { # git checkout : [branch]
-            echo "Switching to branch '${1:-master}'..." &&
-            git checkout "${1:-master}"
-        }
-
-        function gitsb { # git submit branch : [branch]
-            local branch="${1}"
-            if [ -z "${branch}" ]; then
-                branch="$(parse_git_branch)"
-            fi
-
-            [ "${branch}" != master ] &&
-            git checkout master &&
-            echo "Replaying on top of 'master'..." &&
-            git rebase "${branch}" master &&
-            echo "Removing branch '${branch}'..." &&
-            git branch -d "${branch}" &&
-            echo "Replaying on top of all branches..." &&
-            gitmr &&
-            git remote get-url origin > /dev/null 2>&1 &&
-            echo "Pull-pushing on remote..." &&
-            gitpp
-        }
-
-        function gitbd { # git branch diff : [branch], [branch]
-            echo "Showing diff between branch '${2:-master}' and branch '${1:-$(parse_git_branch)}'..." &&
-            git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative ${2:-master}..${1:-$(parse_git_branch)}
-        }
-
-        function gitf { #git files : [commit]
-            echo "Showing the edited files in commit '${1:-HEAD}'..."
-            git diff-tree --no-commit-id --name-only -r "${1:-HEAD}"
-        }
-
-        function gitfs { #git files since : [commit]
-            echo "Showing the edited files since commit '${1:-HEAD^}'..."
-            git diff-tree --no-commit-id --name-only -r "${1:-HEAD^}" HEAD
-        }
-
-        function gitfb { #git files branch :
-            gitfs "$(gitic)"
-        }
-
-        function gitic { #git initial branch commit :
-            git log | command grep "    [^-]" -m 1 -B 4 | head -n1 | sed 's,commit \(.*\),\1^,'
-        }
-
-    # p4
-        function p4ch { # p4 change : [cln]
-            if [ -n "${1}" ]; then
-                echo "Opening all files for edit on changelist '${1}'..." &&
-                p4 edit -c "${1}" ./... > /dev/null &&
-                echo "Reverting all non-changed files..." &&
-                p4 revert -a > /dev/null
-            else
-                echo "Opening all files for edit on the default changelist..." &&
-                p4 edit ./... > /dev/null &&
-                echo "Reverting all non-changed files..." &&
-                p4 revert -a > /dev/null &&
-                echo "Putting the edited files in a new changelist..." &&
-                p4 change
-                p4echs
-            fi
-        }
-
-        function p4d { # p4 changelist diff : cln
-            echo "Showing diff of changelist '${1}'..." &&
-            p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
-        }
-
-        function p4chs { # p4 changes : [path]
-            user=$(p4 info | head -n1 | sed 's,User name: \(.*\),\1,')
-            echo "Showing ${user}'s pending changes on this client..." &&
-            p4 changes -u "${user}" -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
-        }
-
-        function p4p { # p4 pull :
-            echo "Syncing with Perforce..." &&
-            p4 sync ./... &&
-            p4 resolve
-        }
-
-        function p4pp { # p4 pull push : cln
-            echo "Syncing with Perforce..."
-
-            p4path=$(p4 -F %clientRoot% -ztag info)
-            p4path=pwd | sed "s,\($p4path[^/]*\).*,\1/...,"
-            if [ $(p4 sync ${p4path}/... 2>&1 | wc -l) == 1 ]; then
-                echo "No changes. Submitting changelist '${1}' to Perforce..."
-            else
-                echo "There are changes. Resolving..."
-                p4 resolve
-                echo "Creating a 'Sync' git commit..."
-                gitc "Sync"
-            fi
-
-            p4 submit -c "${1}"
-        }
-
-        function p4echs { # p4 export changes :
-            echo "Exporting Perforce changes to variables..."
-
-            number=1
-
-            delim='%'
-            while read -r -d $delim change; do
-                clnum=$(echo $change | sed 's,\([0-9]\+\).*,\1,g')
-
-                if [ $number -eq 1 ]; then
-                    export cln=$clnum
-                    echo cln = $change
-                else
-                    export cln$number=$clnum
-                    echo cln$number = $change
-                fi
-
-                number=$((number+1))
-            done <<< $(p4chs $* | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g' | tr '\r\n' $delim)
-        }
-
-    # mixed
-        function get_git_root {
-            git rev-parse --show-toplevel
-        }
-
-        function g4sb { # p4 and git - submit branch and changelist : cln
-            p4pp "${1}" &&
-            echo "Submitting in git..." &&
-            gitsb
-        }
-
-        function g4mcb { # p4 and git - master create branch and changelist : branch-name, branch
-            gitcb "${1}" "${2}" &&
-            g4chb
-        }
-
-        function g4cb { # p4 and git - checkout gitbranch : branch, cln
-            git checkout master &&
-            p4 revert -a &&
-            git checkout "${1}" &&
-
-            if [ -n "${2}" ]; then
-                g4chb ${2}
-            fi
-        }
-
-        function g4chc { # p4 and git - change commit : branch, cln
-            echo "Editing files from git commit '${1}' and putting them in Perforce change '${2:-new}'"
-
-            cd $(get_git_root)
-            p4 revert -a > /dev/null &&
-            edited_files=$(gitf "${1}" | tail -n +2) &&
-            echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
-
-            if [ -z "${2}" ]; then
-                p4 change
-                p4echs
-            else
-                echo $edited_files | xargs p4 reopen -c "${2}"
-            fi
-        }
-
-        function g4chs { # p4 and git - change since : branch, cln
-            echo "Editing files since git commit '${1}' and putting them in Perforce change '${2:-new}'"
-
-            cd $(get_git_root)
-            git checkout master
-            p4 revert -a > /dev/null &&
-            git checkout -
-            edited_files=$(gitfs "${1}" | tail -n +2) &&
-            echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
-            echo &&
-
-            local change="${2}"
-            if [ -z "${2}" ]; then
-                p4 change
-                p4echs
-                change="$cln"
-            else
-                echo $edited_files | xargs p4 reopen -c "${2}"
-            fi &&
-
-            echo $edited_files | xargs p4 add -c ${change}
-        }
-
-        function g4chb { # p4 and git - change branch : cln
-            if [ -n "${2}" ]; then
-                git checkout "${2}"
-            fi
-
-            g4chs "$(gitic)" "${1}"
-        }
+alias less='less -M -N -i'
+alias les='/usr/share/vim/vim*/macros/less.sh'
+alias tmux='tmux -2'
+alias ll='ls -AlnhF'
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
 export P4CONFIG=.p4config
 
-[ -r ~/.additionalrc     ] && source ~/.additionalrc
+[ -r ~/.vcrc ] && source ~/.vcrc
+[ -r ~/.additionalrc ] && source ~/.additionalrc
 [ -r /usr/share/bash-completion/completions/git ] && source /usr/share/bash-completion/completions/git
 
 tmux a 2>/dev/null || tmux new 2>/dev/null
