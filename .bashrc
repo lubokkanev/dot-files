@@ -59,7 +59,7 @@ function prompt_command {
 PROMPT_COMMAND=prompt_command
 
 bind Space:magic-space
-shopt -s dirspell
+shopt -s dirspell 2>/dev/null
 shopt -s histverify # let's you verify before using '!!'
 stty -ixon # let's you do ^s to go back in the "reverse-search"
 
