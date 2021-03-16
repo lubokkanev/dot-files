@@ -182,7 +182,7 @@ function p4echs { # p4 export changes :
 
 	delim='%'
 	while read -r -d $delim change; do
-		clnum=$(echo $change | sed 's,[^0-9]*\([0-9]\{6\}\).*,\1,g')
+		clnum=$(echo $change | sed 's,.*\([0-9]\{6\}\).*,\1,g')
 
 		if [ $number -eq 1 ]; then
 			export cln=$clnum
