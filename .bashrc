@@ -25,14 +25,15 @@ shopt -s checkwinsize
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto -n'
-    alias fgrep='fgrep --color=auto -n'
-    alias egrep='egrep --color=auto -n'
 fi
+
+alias ls='ls -G'
+#alias dir='dir --color=auto'
+#alias vdir='vdir --color=auto'
+
+alias grep='grep --color=auto -n'
+alias fgrep='fgrep --color=auto -n'
+alias egrep='egrep --color=auto -n'
 
 function parse_git_branch {
     echo $(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
@@ -100,6 +101,7 @@ alias less='less -M -N -i'
 alias les='/usr/share/vim/vim*/macros/less.sh'
 alias tmux='tmux -2'
 alias ll='ls -AlnhF'
+alias cd='cd -P'
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
@@ -108,6 +110,7 @@ export P4CONFIG=.p4config
 [ -r ~/.vcrc ] && source ~/.vcrc
 [ -r ~/.additionalrc ] && source ~/.additionalrc
 [ -r /usr/share/bash-completion/completions/git ] && source /usr/share/bash-completion/completions/git
+[ -r ~/.git-completion.sh ] && source ~/.git-completion.sh
 
 tmux a 2>/dev/null || tmux new 2>/dev/null
 
