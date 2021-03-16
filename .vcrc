@@ -117,7 +117,7 @@ function gitic { #git initial branch commit :
 
 function p4ch { # p4 change : [cln]
 	if [ -n "${1}" ]; then
-		echo "Opening all files for edit on changelist '${1}'..." &&
+		echo "Opening all files for edit on changelist '${1}' - \" $(p4 describe ${1} | head -n 3 | tail -n 1 | sed -e 's,^[ \t]*,,') \"..." &&
 		p4 edit -c "${1}" ./... > /dev/null &&
 		echo "Reverting all non-changed files..." &&
 		p4 revert -a > /dev/null
@@ -133,7 +133,7 @@ function p4ch { # p4 change : [cln]
 }
 
 function p4d { # p4 changelist diff : cln
-	echo "Showing diff of changelist '${1}'..." &&
+	echo "Showing diff of changelist '${1}' - \" $(p4 describe ${1} | head -n 3 | tail -n 1 | sed -e 's,^[ \t]*,,') \"..." &&
 	p4 opened -c "${1}" | sed -e 's/#.*//' | p4 -x - diff
 }
 
@@ -169,11 +169,20 @@ function p4pp { # p4 pull push : cln
 function p4echs { # p4 export changes :
 	echo "Exporting Perforce changes to variables..."
 
+    local arguments="$*"
+    if [ -z "${arguments}" ]; then
+        git_root="$(get_git_root 2>/dev/null)"
+
+        if [ -n "${git_root}" ]; then
+            arguments=${git_root}/...
+        fi
+    fi
+
 	number=1
 
 	delim='%'
 	while read -r -d $delim change; do
-		clnum=$(echo $change | sed 's,\([0-9]\+\).*,\1,g')
+		clnum=$(echo $change | sed 's,[^0-9]*\([0-9]\{6\}\).*,\1,g')
 
 		if [ $number -eq 1 ]; then
 			export cln=$clnum
@@ -184,7 +193,7 @@ function p4echs { # p4 export changes :
 		fi
 
 		number=$((number+1))
-	done <<< $(p4chs $* | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g' | tr '\r\n' $delim)
+	done <<< $(p4chs ${arguments} | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g' | tr '\r\n' $delim)
 }
 
 # mixed - git and p4
