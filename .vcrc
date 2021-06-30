@@ -173,9 +173,9 @@ function p4echs { # p4 export changes :
     if [ -z "${arguments}" ]; then
         git_root="$(get_git_root 2>/dev/null)"
 
-        if [ -n "${git_root}" ]; then
-            arguments=${git_root}/...
-        fi
+        #if [ -n "${git_root}" ]; then
+        #    arguments=${git_root}/...
+        #fi
     fi
 
 	number=1
@@ -186,10 +186,10 @@ function p4echs { # p4 export changes :
 
 		if [ $number -eq 1 ]; then
 			export cln=$clnum
-			echo cln = $change
+			echo "cln  = $change"
 		else
 			export cln$number=$clnum
-			echo cln$number = $change
+			echo "cln$number = $change"
 		fi
 
 		number=$((number+1))

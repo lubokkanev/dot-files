@@ -67,7 +67,7 @@ stty -ixon # let's you do ^s to go back in the "reverse-search"
 # functions and aliases
 function ssh {
     local cmd="${2:-exec \$SHELL -i}"
-    local pkey="$(cat ~/.ssh/id_rsa.pub)"
+    local pub_key="$(cat ~/.ssh/id_rsa.pub)"
 
     command ssh -t "${1}" "
         keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config 2>/dev/null | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
@@ -79,8 +79,8 @@ function ssh {
             touch \"\${keys_file}\"
         fi
 
-        if ! grep \"${pkey}\" \"\${keys_file}\" > /dev/null 2>&1; then
-            echo ${pkey} >> \"\${keys_file}\" 2>/dev/null
+        if ! grep \"${pub_key}\" \"\${keys_file}\" > /dev/null 2>&1; then
+            echo ${pub_key} >> \"\${keys_file}\" 2>/dev/null
             chmod 600 \"\${keys_file}\"
             cp \"\${keys_file}\" \"\${keys_file}2\"
         fi
