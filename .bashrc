@@ -106,6 +106,7 @@ alias cd='cd -P'
 export JAVA_HOME="/usr"
 export EDITOR=vim
 export P4CONFIG=.p4config
+export IGNOREEOF=1
 
 [ -r ~/.vcrc ] && source ~/.vcrc
 [ -r ~/.additionalrc ] && source ~/.additionalrc
