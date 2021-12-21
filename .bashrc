@@ -27,6 +27,9 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
+complete -d cd
+complete -W '$(jobs | cut -c 2- | tr " ]" _)' fg
+
 alias ls='ls -G'
 #alias dir='dir --color=auto'
 #alias vdir='vdir --color=auto'
