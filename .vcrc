@@ -139,8 +139,9 @@ function p4d { # p4 changelist diff : cln
 
 function p4chs { # p4 changes : [path]
 	user=$(p4 info | head -n1 | sed 's,User name: \(.*\),\1,')
-	echo "Showing ${user}'s pending changes on this client..." &&
-	p4 changes -u "${user}" -s pending ${1} | grep $(p4 -Ztag -F %clientName% info) --color=none
+	client=$(p4 info | head -n2 | tail -n1 | sed 's,Client name: \(.*\),\1,')
+	echo "Showing ${user}'s pending changes on this client "$client"..." &&
+	p4 changes -u "${user}" -s pending -c $client ${1} | tac
 }
 
 function p4p { # p4 pull :
