@@ -181,6 +181,7 @@ function p4echs { # p4 export changes :
     fi
 
 	number=1
+    local chs_text=""
 
 	delim='%'
 	while read -r -d $delim change; do
@@ -188,14 +189,17 @@ function p4echs { # p4 export changes :
 
 		if [ $number -eq 1 ]; then
 			export cln=$clnum
-			echo "cln  = $change"
+            chs_text+="cln  = $change"
 		else
 			export cln$number=$clnum
-			echo "cln$number = $change"
+            chs_text+=$'\n'"cln$number = $change"
 		fi
 
 		number=$((number+1))
 	done <<< $(p4chs ${arguments} | tail -n +2 | sed 's,^[0-9]\+:Change \([0-9]\+\) on .* by .* '"'"'\(.*\).$,\1 \2,g' | tr '\r\n' $delim)
+
+    export P4CHS_TEXT="$chs_text"
+    echo "${P4CHS_TEXT}"
 }
 
 # mixed - git and p4
@@ -264,11 +268,20 @@ function g4chs { # p4 and git - change since : branch, cln
 	echo $edited_files | xargs p4 add -c ${change}
 }
 
-function g4chb { # p4 and git - change branch : cln
+function g4chb { # p4 and git - change branch : [branch], cln
 	if [ -n "${2}" ]; then
 		git checkout "${2}"
 	fi
 
 	g4chs "$(gitic)" "${1}"
 }
+
+function cln_completion {
+    echo ""
+    echo "${P4CHS_TEXT}"
+    COMPREPLY+=('$cln')
+    COMPREPLY+=('$cln?')
+}
+
+complete -F cln_completion post-review sb-hms-all-main sb-hms-all-next sb-hms-va-main sb-hms-va-next sb-dr-vabase-main sb-dr-vabase-next pr-and-sb-hms-all-main pr-and-sb-hms-all-next p4d p4 g4sb g4chb
 
