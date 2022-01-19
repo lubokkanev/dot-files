@@ -92,6 +92,20 @@ function ssh {
     "
 }
 
+# completion from .ssh/config
+function ssh_completion {
+    local words=""
+    while read line; do
+        if [[ "${line}" == "Host "* ]]; then
+            name=$(sed 's,^Host \([^\s]*\),\1,' <<< "${line}")
+            words+=" $name"
+        fi
+    done < ~/.ssh/config
+
+    COMPREPLY=($(compgen -W "$words" "${COMP_WORDS[-1]}"))
+}
+complete -F ssh_completion ssh sshpass scp
+
 function getfs { # get functions :
     grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'
 }
