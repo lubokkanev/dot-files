@@ -102,16 +102,17 @@ function ssh_completion {
         fi
     done < ~/.ssh/config
 
-    COMPREPLY=($(compgen -W "$words" "${COMP_WORDS[-1]}"))
+    local last_index=$((${#COMP_WORDS[@]} - 1))
+    COMPREPLY=($(compgen -W "$words" "${COMP_WORDS[last_index]}"))
 }
-complete -F ssh_completion ssh sshpass scp
+complete -F ssh_completion ssh sshpass fix-vr-ui ssh-hms
 
 function getfs { # get functions :
     grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'
 }
 
 function getvcfs { # get version control functions :
-    getfs | tail -n +7
+    grep "^\s*function" ~/.vcrc |sed 's,^[0-9]\+:\s*function,,g'
 }
 
 alias less='less -M -N -i'

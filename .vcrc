@@ -185,7 +185,7 @@ function p4echs { # p4 export changes :
 
 	delim='%'
 	while read -r -d $delim change; do
-		clnum=$(echo $change | sed 's,.*\([0-9]\{6\}\).*,\1,g')
+		clnum=$(echo $change | sed 's,[^0-9]*\([0-9]*\).*,\1,g')
 
 		if [ $number -eq 1 ]; then
 			export cln=$clnum
@@ -254,13 +254,13 @@ function g4chs { # p4 and git - change since : branch, cln
 	git checkout -
 	edited_files=$(gitfs "${1}" | tail -n +2) &&
 	echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
-	echo &&
+	echo
 
-	local change="${2}"
+	change="${2}"
 	if [ -z "${2}" ]; then
 		p4 change
 		p4echs
-		change="$cln"
+		change="$cln" # TODO: depends on new changes getting the lowers number which is not true right now
 	else
 		echo $edited_files | xargs p4 reopen -c "${2}"
 	fi &&
@@ -279,8 +279,9 @@ function g4chb { # p4 and git - change branch : [branch], cln
 function cln_completion {
     echo ""
     echo "${P4CHS_TEXT}"
-    COMPREPLY=($(compgen -W "'\$cln' '\$cln2'" "${COMP_WORDS[-1]}"))
+    local last_index=$((${#COMP_WORDS[@]} - 1))
+    COMPREPLY=($(compgen -W "'\$cln' '\$cln2'" "${COMP_WORDS[$last_index]}"))
 }
 
-complete -F cln_completion post-review sb-hms-all-main sb-hms-all-next sb-hms-va-main sb-hms-va-next sb-dr-vabase-main sb-dr-vabase-next pr-and-sb-hms-all-main pr-and-sb-hms-all-next p4d p4 g4sb g4chb
+complete -F cln_completion post-review sb-hms-all-main sb-hms-all-next sb-hms-va-main sb-hms-va-next sb-dr-vabase-main sb-dr-vabase-next pr-and-sb-hms-all-main pr-and-sb-hms-all-next p4d g4sb g4chb p4pp "p4 change"
 
