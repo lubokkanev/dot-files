@@ -283,5 +283,5 @@ function cln_completion {
     COMPREPLY=($(compgen -W "'\$cln' '\$cln2'" "${COMP_WORDS[$last_index]}"))
 }
 
-complete -F cln_completion post-review sb-hms-all-main sb-hms-all-next sb-hms-va-main sb-hms-va-next sb-dr-vabase-main sb-dr-vabase-next pr-and-sb-hms-all-main pr-and-sb-hms-all-next p4d g4sb g4chb p4pp "p4 change"
+complete -F cln_completion post-review sb-hms-all-main sb-hms-all-next sb-hms-va-main sb-hms-va-next sb-dr-vabase-main sb-dr-vabase-next pr-and-sb-hms-all-main pr-and-sb-hms-all-next p4d g4sb g4chb p4pp
 

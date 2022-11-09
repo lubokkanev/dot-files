@@ -1,8 +1,8 @@
 # If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+#case $- in
+#    *i*) ;;
+#      *) return;;
+#esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -28,6 +28,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 complete -d cd
+complete -d pushd
 complete -W '$(jobs | cut -c 2- | tr " ]" _)' fg
 
 alias ls='ls -G'
@@ -88,6 +89,10 @@ function ssh {
             cp \"\${keys_file}\" \"\${keys_file}2\"
         fi
 
+        if ! grep -q \"alias ll\" ~/.bashrc 2>/dev/null; then
+            echo \"alias ll='ls -AlnhF'\" >> ~/.bashrc
+        fi
+
         ${cmd}
     "
 }
@@ -105,7 +110,7 @@ function ssh_completion {
     local last_index=$((${#COMP_WORDS[@]} - 1))
     COMPREPLY=($(compgen -W "$words" "${COMP_WORDS[last_index]}"))
 }
-complete -F ssh_completion ssh sshpass fix-vr-ui ssh-hms
+complete -F ssh_completion ssh sshpass fix-vr-ui ssh-hms setup-new-hms # no scp because it doesn't allow me to auto-complete the destination
 
 function getfs { # get functions :
     grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'
@@ -119,7 +124,7 @@ alias less='less -M -N -i'
 alias les='/usr/share/vim/vim*/macros/less.sh'
 alias tmux='tmux -2'
 alias ll='ls -AlnhF'
-alias cd='cd -P'
+alias cd='pushd 1>/dev/null'
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
