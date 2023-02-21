@@ -110,7 +110,7 @@ function ssh_completion {
     local last_index=$((${#COMP_WORDS[@]} - 1))
     COMPREPLY=($(compgen -W "$words" "${COMP_WORDS[last_index]}"))
 }
-complete -F ssh_completion ssh sshpass fix-vr-ui ssh-hms setup-new-hms # no scp because it doesn't allow me to auto-complete the destination
+complete -F ssh_completion ssh sshpass fix-vr-ui hms-ssh hms-setup-new hms-restart hms-rpm-upgrade # no scp because it doesn't allow me to auto-complete the local destination
 
 function getfs { # get functions :
     grep "^\s*function" ~/.bashrc |sed 's,^[0-9]\+:\s*function,,g'

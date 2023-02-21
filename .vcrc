@@ -26,7 +26,7 @@ function gitmr { # git master rebase :
 	# set -f changes the file listing format
 	set -f &&
 		for branch in $(git branch); do
-			if [ "${branch}" != "*" ]; then
+			if [ "${branch}" != "*" ] && [ "${branch}" != "X*" ]; then
 				if ! git rebase master "${branch}"; then
 					break;
 				fi;
@@ -147,7 +147,7 @@ function p4chs { # p4 changes : [path]
 
 function p4p { # p4 pull :
 	echo "Syncing with Perforce..." &&
-	p4 sync ./... &&
+	p4 sync ./... 1>/dev/null &&
 	p4 resolve
 }
 
@@ -262,10 +262,10 @@ function g4chs { # p4 and git - change since : branch, cln
 		p4echs
 		change="$cln" # TODO: depends on new changes getting the lowers number which is not true right now
 	else
-		echo $edited_files | xargs p4 reopen -c "${2}"
+		echo $edited_files | xargs p4 reopen -c "${2}" 1>/dev/null
 	fi &&
 
-	echo $edited_files | xargs p4 add -c ${change}
+	echo $edited_files | xargs p4 add -c ${change} 1>/dev/null
 }
 
 function g4chb { # p4 and git - change branch : [branch], cln
