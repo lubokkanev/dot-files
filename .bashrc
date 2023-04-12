@@ -58,10 +58,13 @@ function prompt_command {
     local blue='\[\e[0;36m\]'
     local white='\[\e[m\]'
 
-    [ ${exit_code} -eq 0 ] && PS1="${green}" || PS1="${red}"
-    PS1+="> ${yellow}\t${red}|${blue}\u${red}@${green}\h${red}:${purple}\W${yellow}\$(git_branch_prompt)${red}\$${white} "
+    PS1="-----------------------------------------------------------\n\n"
+    [ ${exit_code} -eq 0 ] && PS1+="${green}" || PS1+="${red}"
+    PS1+="> ${yellow}\d \t${red}|${blue}\u${red}@${green}\h${red}:${purple}\W${yellow}\$(git_branch_prompt)${red}\$${white} "
 }
-PROMPT_COMMAND=prompt_command
+if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
+    PROMPT_COMMAND=prompt_command
+fi
 
 bind Space:magic-space
 shopt -s dirspell 2>/dev/null
@@ -73,7 +76,7 @@ function ssh {
     local cmd="${2:-exec \$SHELL -i}"
     local pub_key="$(cat ~/.ssh/id_rsa.pub)"
 
-    command ssh -t "${1}" "
+    command ssh -o ConnectTimeout=1 -t "${1}" "
         keys_file=\"\$(grep AuthorizedKeysFile /etc/ssh/sshd_config 2>/dev/null | sed 's,.*\s\+\(.*\),\1,g' | sed s,%u,\$USER,g)\"
         [ -f \"\${keys_file}\" ] || keys_file=~/\"\${keys_file}\"
         [ -f \"\${keys_file}\" ] || keys_file=~/.ssh/authorized_keys
@@ -124,7 +127,6 @@ alias less='less -M -N -i'
 alias les='/usr/share/vim/vim*/macros/less.sh'
 alias tmux='tmux -2'
 alias ll='ls -AlnhF'
-alias cd='pushd 1>/dev/null'
 
 export JAVA_HOME="/usr"
 export EDITOR=vim
@@ -136,5 +138,7 @@ export IGNOREEOF=1
 [ -r /usr/share/bash-completion/completions/git ] && source /usr/share/bash-completion/completions/git
 [ -r ~/.git-completion.sh ] && source ~/.git-completion.sh
 
-tmux a 2>/dev/null || tmux new 2>/dev/null
+if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
+    tmux a 2>/dev/null || tmux new 2>/dev/null
+fi
 
