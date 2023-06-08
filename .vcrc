@@ -245,7 +245,7 @@ function g4chc { # p4 and git - change commit : branch, cln
 	fi
 }
 
-function g4chs { # p4 and git - change since : branch, cln
+function g4chs { # p4 and git - change since : commit, cln
 	echo "Editing files since git commit '${1}' and putting them in Perforce change '${2:-new}'"
 
 	cd $(get_git_root)
@@ -256,9 +256,10 @@ function g4chs { # p4 and git - change since : branch, cln
 	echo $edited_files | xargs p4 edit ${2:+-c ${2}} &&
 	echo
 
-	change="${2}"
+    local branch=$(git rev-parse --abbrev-ref HEAD)
+	local change="${2}"
 	if [ -z "${2}" ]; then
-		p4 change
+        p4 --field "Change=new" --field "Description=${branch}" change -o | p4 change -i
 		p4echs
 		change="$cln" # TODO: depends on new changes getting the lowers number which is not true right now
 	else
@@ -268,7 +269,7 @@ function g4chs { # p4 and git - change since : branch, cln
 	echo $edited_files | xargs p4 add -c ${change} 1>/dev/null
 }
 
-function g4chb { # p4 and git - change branch : [branch], cln
+function g4chb { # p4 and git - change branch : cln, [branch]
 	if [ -n "${2}" ]; then
 		git checkout "${2}"
 	fi
