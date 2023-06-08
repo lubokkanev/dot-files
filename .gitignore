@@ -5,7 +5,6 @@
 !.vimrc
 !.inputrc
 !.screenrc
-!.ssh/config
 !.enable-git-completion.sh
 !.tmux.conf
 !.gitconfig
